@@ -42,15 +42,6 @@ export default function OnboardingPage() {
     businessTagline: "",
   });
 
-  // ── Phone OTP state ──────────────────────────────────────────────────────
-  const [otp, setOtp]                       = useState("");
-  const [otpSent, setOtpSent]               = useState(false);
-  const [phoneVerified, setPhoneVerified]   = useState(false);
-  const [sendingOtp, setSendingOtp]         = useState(false);
-  const [verifyingOtp, setVerifyingOtp]     = useState(false);
-  const [otpError, setOtpError]             = useState<string | null>(null);
-  const [verifiedPhone, setVerifiedPhone]   = useState("");
-
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (user) {
@@ -69,41 +60,11 @@ export default function OnboardingPage() {
     setError(null);
   }
 
-  // ── Send OTP ─────────────────────────────────────────────────────────────
-  async function handleSendOtp() {
-    setOtpError(null);
-    if (!form.phone.trim()) { setOtpError("Enter your phone number first"); return; }
-    setSendingOtp(true);
-    const res = await fetch("/api/admin/send-otp", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ phone: form.phone.trim() }),
-    });
-    const data = await res.json();
-    setSendingOtp(false);
-    if (!res.ok) { setOtpError(data.error ?? "Failed to send OTP"); return; }
-    setOtpSent(true);
-    setOtp("");
-  }
-
-  // ── Verify OTP ───────────────────────────────────────────────────────────
-  async function handleVerifyOtp() {
-    setOtpError(null);
-    if (!otp.trim()) { setOtpError("Enter the OTP sent to your phone"); return; }
-    setVerifyingOtp(true);
-    const res = await fetch("/api/admin/verify-otp", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ phone: form.phone.trim(), token: otp.trim() }),
-    });
-    const data = await res.json();
-    setVerifyingOtp(false);
-    if (!res.ok) { setOtpError(data.error ?? "Invalid OTP. Please try again."); return; }
-    setPhoneVerified(true);
-    setVerifiedPhone(data.phone);
-  }
-
   // ── Step navigation ───────────────────────────────────────────────────────
+  // NOTE: phone OTP verification is temporarily disabled (no SMS provider
+  // configured in Supabase yet) — phone is collected as a plain field for
+  // now. Re-enable by restoring the OTP send/verify UI + phoneVerified gate
+  // once Authentication → Phone has a provider set up.
   async function handleNext() {
     setError(null);
 
@@ -119,7 +80,6 @@ export default function OnboardingPage() {
     if (step === 1) {
       if (!form.fullName.trim()) { setError("Full name is required"); return; }
       if (!form.phone.trim()) { setError("Phone number is required"); return; }
-      if (!phoneVerified) { setError("Please verify your phone number with OTP before continuing"); return; }
       if (!form.chapterId) { setError("Please select a chapter"); return; }
     }
 
@@ -132,7 +92,7 @@ export default function OnboardingPage() {
         id: userId!,
         email: userEmail,
         full_name: form.fullName,
-        phone: verifiedPhone || form.phone || null,
+        phone: form.phone || null,
         chapter_id: form.chapterId,
         business_name: form.businessName,
         business_category: form.businessCategory,
@@ -227,82 +187,16 @@ export default function OnboardingPage() {
               />
             </div>
 
-            {/* Phone + OTP */}
+            {/* Phone */}
             <div className="space-y-2">
               <Label htmlFor="phone">
                 Phone Number <span className="text-destructive">*</span>
-                {phoneVerified && (
-                  <span className="ml-2 inline-flex items-center gap-1 text-xs font-semibold text-emerald-600">
-                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                    Verified
-                  </span>
-                )}
               </Label>
-              <div className="flex gap-2">
-                <Input
-                  id="phone" placeholder="9876543210" type="tel"
-                  value={form.phone}
-                  onChange={(e) => {
-                    set("phone", e.target.value);
-                    setOtpSent(false);
-                    setPhoneVerified(false);
-                    setOtpError(null);
-                    setOtp("");
-                  }}
-                  disabled={phoneVerified}
-                  className="flex-1"
-                />
-                {!phoneVerified && (
-                  <Button
-                    type="button" variant="outline" onClick={handleSendOtp}
-                    disabled={sendingOtp || !form.phone.trim()}
-                    className="whitespace-nowrap text-purple-600 border-purple-300 hover:bg-purple-50 press-scale">
-                    {sendingOtp ? "Sending…" : otpSent ? "Resend" : "Send OTP"}
-                  </Button>
-                )}
-              </div>
-
-              {/* OTP input — shown after SMS sent */}
-              {otpSent && !phoneVerified && (
-                <div className="flex gap-2 pt-1">
-                  <Input
-                    placeholder="Enter 6-digit OTP"
-                    type="text" inputMode="numeric" maxLength={6}
-                    value={otp}
-                    onChange={(e) => { setOtp(e.target.value.replace(/\D/g, "")); setOtpError(null); }}
-                    className="flex-1 tracking-widest font-bold text-center"
-                  />
-                  <Button
-                    type="button" onClick={handleVerifyOtp}
-                    disabled={verifyingOtp || otp.length < 4}
-                    className="whitespace-nowrap bg-emerald-600 hover:bg-emerald-700 text-white press-scale shine-hover">
-                    {verifyingOtp ? "Verifying…" : "Verify"}
-                  </Button>
-                </div>
-              )}
-
-              {otpError && (
-                <p className="text-xs text-destructive flex items-center gap-1">
-                  <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  {otpError}
-                </p>
-              )}
-
-              {!otpSent && !phoneVerified && form.phone.trim() && (
-                <p className="text-xs text-muted-foreground">
-                  We&apos;ll send a one-time password to this number to verify it&apos;s yours.
-                </p>
-              )}
-
-              {phoneVerified && (
-                <p className="text-xs text-emerald-600">
-                  ✓ Phone number verified successfully.
-                </p>
-              )}
+              <Input
+                id="phone" placeholder="9876543210" type="tel"
+                value={form.phone}
+                onChange={(e) => set("phone", e.target.value)}
+              />
             </div>
 
             <div className="space-y-2">

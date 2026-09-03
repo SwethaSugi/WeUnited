@@ -41,66 +41,29 @@ export function CreateUserClient({ chapters }: Props) {
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
   const [phone, setPhone]       = useState("");
-  const [otp, setOtp]           = useState("");
   const [businessName, setBusinessName]         = useState("");
   const [businessCategory, setBusinessCategory] = useState("");
   const [businessTagline, setBusinessTagline]   = useState("");
   const [chapterId, setChapterId] = useState("");
   const [role, setRole]           = useState("member");
 
-  // ── OTP state ──
-  const [otpSent, setOtpSent]         = useState(false);
-  const [phoneVerified, setPhoneVerified] = useState(false);
-  const [sendingOtp, setSendingOtp]   = useState(false);
-  const [verifyingOtp, setVerifyingOtp] = useState(false);
-  const [otpError, setOtpError]       = useState<string | null>(null);
-  const [verifiedPhone, setVerifiedPhone] = useState(""); // the E.164 phone that was verified
-
   // ── submit state ──
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [success, setSuccess]         = useState(false);
 
-  // ── Send OTP ──────────────────────────────────────────────────────────────
-  async function handleSendOtp() {
-    setOtpError(null);
-    if (!phone.trim()) { setOtpError("Enter a phone number first"); return; }
-    setSendingOtp(true);
-    const res = await fetch("/api/admin/send-otp", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ phone: phone.trim() }),
-    });
-    const data = await res.json();
-    setSendingOtp(false);
-    if (!res.ok) { setOtpError(data.error ?? "Failed to send OTP"); return; }
-    setOtpSent(true);
-  }
-
-  // ── Verify OTP ────────────────────────────────────────────────────────────
-  async function handleVerifyOtp() {
-    setOtpError(null);
-    if (!otp.trim()) { setOtpError("Enter the OTP"); return; }
-    setVerifyingOtp(true);
-    const res = await fetch("/api/admin/verify-otp", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ phone: phone.trim(), token: otp.trim() }),
-    });
-    const data = await res.json();
-    setVerifyingOtp(false);
-    if (!res.ok) { setOtpError(data.error ?? "Invalid OTP"); return; }
-    setPhoneVerified(true);
-    setVerifiedPhone(data.phone);
-  }
-
   // ── Create User ───────────────────────────────────────────────────────────
+  // NOTE: phone OTP verification is temporarily disabled (no SMS provider
+  // configured in Supabase yet) — phone is collected as a plain field for
+  // now. Re-enable by restoring the OTP send/verify UI + phoneVerified gate
+  // once Authentication → Phone has a provider set up.
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSubmitError(null);
 
-    if (!phoneVerified) { setSubmitError("Please verify the phone number before creating the user."); return; }
     if (password.length < 8) { setSubmitError("Password must be at least 8 characters."); return; }
+
+    const e164 = phone.trim() ? (phone.trim().startsWith("+") ? phone.trim() : `+91${phone.trim().replace(/^0/, "")}`) : "";
 
     setSubmitting(true);
     const res = await fetch("/api/admin/create-user", {
@@ -110,7 +73,7 @@ export function CreateUserClient({ chapters }: Props) {
         email: email.trim(),
         password,
         fullName: fullName.trim(),
-        phone: verifiedPhone,
+        phone: e164,
         businessName: businessName.trim(),
         businessCategory,
         businessTagline: businessTagline.trim(),
@@ -138,7 +101,7 @@ export function CreateUserClient({ chapters }: Props) {
             <span className="font-semibold text-slate-700 dark:text-slate-300">{fullName}</span> can now log in with their email and password.
           </p>
           <div className="flex gap-3 justify-center">
-            <button onClick={() => { setSuccess(false); setFullName(""); setEmail(""); setPassword(""); setPhone(""); setOtp(""); setBusinessName(""); setBusinessCategory(""); setBusinessTagline(""); setChapterId(""); setRole("member"); setOtpSent(false); setPhoneVerified(false); setVerifiedPhone(""); }}
+            <button onClick={() => { setSuccess(false); setFullName(""); setEmail(""); setPassword(""); setPhone(""); setBusinessName(""); setBusinessCategory(""); setBusinessTagline(""); setChapterId(""); setRole("member"); }}
               className="px-6 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:scale-[1.02]"
               style={{ background: "linear-gradient(135deg, #a855f7, #6366f1)", boxShadow: "0 6px 20px rgba(168,85,247,0.3)" }}>
               + Create Another
@@ -168,7 +131,7 @@ export function CreateUserClient({ chapters }: Props) {
           </Link>
           <div>
             <h1 className="text-2xl font-black text-slate-900 dark:text-white font-display">Create New User</h1>
-            <p className="text-sm text-slate-500 mt-0.5">Super admin only — fill all details and verify phone via OTP</p>
+            <p className="text-sm text-slate-500 mt-0.5">Super admin only — fill in the member&apos;s details</p>
           </div>
         </div>
 
@@ -204,63 +167,20 @@ export function CreateUserClient({ chapters }: Props) {
             </FieldGroup>
           </SectionCard>
 
-          {/* ── Section: Phone + OTP ── */}
-          <SectionCard title="Phone Verification" icon="📱">
+          {/* ── Section: Phone ── */}
+          <SectionCard title="Phone Number" icon="📱">
             <FieldGroup label="Phone Number">
               <div className="flex gap-2">
                 <div className="flex items-center px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm font-semibold text-slate-600 dark:text-slate-400 select-none">
                   🇮🇳 +91
                 </div>
                 <input className={inputCls + " flex-1"} type="tel" placeholder="9876543210"
-                  value={phone} onChange={(e) => { setPhone(e.target.value); setOtpSent(false); setPhoneVerified(false); setOtpError(null); setOtp(""); }}
-                  disabled={phoneVerified} />
-                {phoneVerified
-                  ? <div className="flex items-center gap-1.5 px-4 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400 text-sm font-bold whitespace-nowrap">
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                      </svg>
-                      Verified
-                    </div>
-                  : <button type="button" onClick={handleSendOtp} disabled={sendingOtp}
-                      className="px-4 rounded-xl text-sm font-bold text-white whitespace-nowrap disabled:opacity-60 transition-all hover:scale-[1.02]"
-                      style={{ background: "linear-gradient(135deg, #a855f7, #6366f1)" }}>
-                      {sendingOtp ? "Sending…" : otpSent ? "Resend OTP" : "Send OTP"}
-                    </button>
-                }
+                  value={phone} onChange={(e) => setPhone(e.target.value)} />
               </div>
+              <p className="text-xs text-slate-400 mt-1.5">
+                OTP verification is temporarily off — the number is saved as entered.
+              </p>
             </FieldGroup>
-
-            {otpSent && !phoneVerified && (
-              <div className="animate-fade-in">
-                <FieldGroup label="Enter OTP (sent via SMS)">
-                  <div className="flex gap-2">
-                    <input className={inputCls + " flex-1 tracking-[0.3em] font-bold text-center"} type="text"
-                      inputMode="numeric" maxLength={6} placeholder="------"
-                      value={otp} onChange={(e) => { setOtp(e.target.value.replace(/\D/g, "")); setOtpError(null); }} />
-                    <button type="button" onClick={handleVerifyOtp} disabled={verifyingOtp || otp.length < 4}
-                      className="px-4 rounded-xl text-sm font-bold text-white whitespace-nowrap disabled:opacity-60 transition-all hover:scale-[1.02]"
-                      style={{ background: "linear-gradient(135deg, #10b981, #059669)" }}>
-                      {verifyingOtp ? "Verifying…" : "Verify"}
-                    </button>
-                  </div>
-                </FieldGroup>
-              </div>
-            )}
-
-            {otpError && (
-              <p className="text-sm text-red-500 flex items-center gap-1.5 mt-1">
-                <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                {otpError}
-              </p>
-            )}
-
-            {!phoneVerified && (
-              <p className="text-xs text-slate-400 mt-1">
-                An SMS with a 6-digit OTP will be sent to the number. Requires Twilio configured in Supabase → Authentication → Phone.
-              </p>
-            )}
           </SectionCard>
 
           {/* ── Section: Business ── */}
