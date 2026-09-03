@@ -103,7 +103,7 @@ export function Sidebar() {
   }
 
   return (
-    <aside className="hidden lg:flex flex-col w-64 min-h-screen sticky top-0 border-r"
+    <aside className="hidden lg:flex flex-col w-64 h-screen sticky top-0 flex-shrink-0 border-r"
       style={{ background: "#0f0f1a", borderColor: "rgba(255,255,255,0.06)" }}>
 
       {/* Logo */}
