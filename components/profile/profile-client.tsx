@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { createClient } from "@/lib/supabase/client";
@@ -35,6 +35,13 @@ export function ProfileClient({ profile }: Props) {
   const supabase = createClient();
 
   const [tab, setTab] = useState<"profile" | "business" | "security">("profile");
+
+  // Read ?tab= from URL on mount
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const t = params.get("tab");
+    if (t === "business" || t === "security") setTab(t);
+  }, []);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);

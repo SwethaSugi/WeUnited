@@ -138,11 +138,13 @@ export function TopNav() {
               </Badge>
             </DropdownMenuLabel>
             <DropdownMenuSeparator className="mb-1" />
-            <DropdownMenuItem asChild className="rounded-xl px-3 py-2 text-sm font-semibold cursor-pointer">
-              <Link href="/profile">My Profile</Link>
+            <DropdownMenuItem onClick={() => router.push("/profile")}
+              className="rounded-xl px-3 py-2 text-sm font-semibold cursor-pointer">
+              My Profile
             </DropdownMenuItem>
-            <DropdownMenuItem asChild className="rounded-xl px-3 py-2 text-sm font-semibold cursor-pointer">
-              <Link href="/profile?tab=settings">Settings</Link>
+            <DropdownMenuItem onClick={() => router.push("/profile?tab=security")}
+              className="rounded-xl px-3 py-2 text-sm font-semibold cursor-pointer">
+              Settings
             </DropdownMenuItem>
             <DropdownMenuSeparator className="my-1" />
             <DropdownMenuItem onClick={handleLogout}
