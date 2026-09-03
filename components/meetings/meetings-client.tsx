@@ -94,7 +94,7 @@ export function MeetingsClient({ meetings: initialMeetings, profile }: Props) {
     if (err) { setFormError(err.message); return; }
     if (data) {
       setMeetings((prev) => [data as Meeting, ...prev]);
-      // Notify all active chapter members
+      // Notify all active chapter members via server route (bypasses RLS)
       const { data: members } = await supabase
         .from("profiles")
         .select("id")
@@ -102,16 +102,20 @@ export function MeetingsClient({ meetings: initialMeetings, profile }: Props) {
         .eq("is_active", true)
         .neq("id", profile.id);
       if (members && members.length > 0) {
-        await supabase.from("notifications").insert(
-          members.map((m) => ({
-            user_id: m.id,
-            title: "📅 New Meeting Scheduled",
-            message: `${data.title} on ${formatDate(data.meeting_date)}${data.venue ? ` at ${data.venue}` : ""}`,
-            type: "meeting",
-            is_read: false,
-            link: "/meetings",
-          }))
-        );
+        await fetch("/api/notifications", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            notifications: members.map((m) => ({
+              user_id: m.id,
+              title: "📅 New Meeting Scheduled",
+              message: `${data.title} on ${formatDate(data.meeting_date)}${data.venue ? ` at ${data.venue}` : ""}`,
+              type: "meeting",
+              is_read: false,
+              link: "/meetings",
+            })),
+          }),
+        });
       }
     }
     setShowNew(false); resetCreate();

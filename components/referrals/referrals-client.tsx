@@ -91,14 +91,20 @@ export function ReferralsClient({ referrals, members, currentUserId, currentProf
     });
     setSubmitting(false);
     if (err) { setError(err.message); return; }
-    // Notify the referral receiver
-    await supabase.from("notifications").insert({
-      user_id: receiverId,
-      title: "🎉 New Referral Received",
-      message: `${currentProfile.full_name} referred ${referredName} to you${category ? ` for ${category}` : ""}`,
-      type: "referral",
-      is_read: false,
-      link: "/referrals",
+    // Notify the referral receiver via server route (bypasses RLS)
+    await fetch("/api/notifications", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        notifications: [{
+          user_id: receiverId,
+          title: "🎉 New Referral Received",
+          message: `${currentProfile.full_name} referred ${referredName} to you${category ? ` for ${category}` : ""}`,
+          type: "referral",
+          is_read: false,
+          link: "/referrals",
+        }],
+      }),
     });
     setShowNew(false); resetForm(); router.refresh();
   }

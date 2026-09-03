@@ -26,15 +26,17 @@ export function TopNav() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
 
-  useEffect(() => {
+  async function fetchNotifications() {
     if (!profile?.id) return;
-    supabase
+    const { data } = await supabase
       .from("notifications").select("*")
       .eq("user_id", profile.id).eq("is_read", false)
-      .order("created_at", { ascending: false }).limit(5)
-      .then(({ data }) => {
-        if (data) { setNotifications(data); setUnreadCount(data.length); }
-      });
+      .order("created_at", { ascending: false }).limit(5);
+    if (data) { setNotifications(data); setUnreadCount(data.length); }
+  }
+
+  useEffect(() => {
+    fetchNotifications();
   }, [profile?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function markAllRead() {
@@ -66,7 +68,7 @@ export function TopNav() {
       {/* Right */}
       <div className="flex items-center gap-1.5">
         {/* Notifications */}
-        <DropdownMenu>
+        <DropdownMenu onOpenChange={(open) => { if (open) fetchNotifications(); }}>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon"
               className="relative w-9 h-9 rounded-xl text-slate-500 hover:text-slate-700 hover:bg-slate-100 transition-all">
