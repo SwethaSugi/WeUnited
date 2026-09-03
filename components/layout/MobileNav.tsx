@@ -106,7 +106,7 @@ export function MobileNav() {
               <AvatarImage src={profile?.avatar_url ?? undefined} />
               <AvatarFallback className="text-xs font-black text-white"
                 style={{ background: "linear-gradient(135deg, #a855f7, #6366f1)" }}>
-                {profile ? initials(profile.full_name) : "?"}
+                {profile ? initials(profile.full_name ?? "?") : "?"}
               </AvatarFallback>
             </Avatar>
             <div className="flex-1 min-w-0">
