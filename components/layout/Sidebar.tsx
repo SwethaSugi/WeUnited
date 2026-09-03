@@ -118,7 +118,7 @@ export function Sidebar() {
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+      <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto scrollbar-hide">
         <p className="px-3 mb-3 text-[10px] font-bold text-white/25 uppercase tracking-widest">Navigation</p>
         {NAV_ITEMS.map((item) => {
           const active = item.href === "/dashboard"

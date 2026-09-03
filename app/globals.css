@@ -183,6 +183,15 @@ body {
   border: 1px solid rgba(255,255,255,0.06);
 }
 
+/* ─── Hide scrollbar (keep functionality) ─── */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 /* ─── Gradient card borders ─── */
 .gradient-border {
   position: relative;
