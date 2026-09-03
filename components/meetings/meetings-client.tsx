@@ -92,7 +92,28 @@ export function MeetingsClient({ meetings: initialMeetings, profile }: Props) {
     }).select().single();
     setSubmitting(false);
     if (err) { setFormError(err.message); return; }
-    if (data) setMeetings((prev) => [data as Meeting, ...prev]);
+    if (data) {
+      setMeetings((prev) => [data as Meeting, ...prev]);
+      // Notify all active chapter members
+      const { data: members } = await supabase
+        .from("profiles")
+        .select("id")
+        .eq("chapter_id", profile.chapter_id!)
+        .eq("is_active", true)
+        .neq("id", profile.id);
+      if (members && members.length > 0) {
+        await supabase.from("notifications").insert(
+          members.map((m) => ({
+            user_id: m.id,
+            title: "📅 New Meeting Scheduled",
+            message: `${data.title} on ${formatDate(data.meeting_date)}${data.venue ? ` at ${data.venue}` : ""}`,
+            type: "meeting",
+            is_read: false,
+            link: "/meetings",
+          }))
+        );
+      }
+    }
     setShowNew(false); resetCreate();
   }
 
