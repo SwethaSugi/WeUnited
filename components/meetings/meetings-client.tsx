@@ -102,20 +102,28 @@ export function MeetingsClient({ meetings: initialMeetings, profile }: Props) {
         .eq("is_active", true)
         .neq("id", profile.id);
       if (members && members.length > 0) {
-        await fetch("/api/notifications", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            notifications: members.map((m) => ({
-              user_id: m.id,
-              title: "📅 New Meeting Scheduled",
-              message: `${data.title} on ${formatDate(data.meeting_date)}${data.venue ? ` at ${data.venue}` : ""}`,
-              type: "meeting",
-              is_read: false,
-              link: "/meetings",
-            })),
-          }),
-        });
+        try {
+          const res = await fetch("/api/notifications", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              notifications: members.map((m) => ({
+                user_id: m.id,
+                title: "📅 New Meeting Scheduled",
+                message: `${data.title} on ${formatDate(data.meeting_date)}${data.venue ? ` at ${data.venue}` : ""}`,
+                type: "meeting",
+                is_read: false,
+                link: "/meetings",
+              })),
+            }),
+          });
+          if (!res.ok) {
+            const body = await res.json().catch(() => ({}));
+            console.error("Meeting notification failed:", res.status, body);
+          }
+        } catch (notifyErr) {
+          console.error("Meeting notification request failed:", notifyErr);
+        }
       }
     }
     setShowNew(false); resetCreate();
@@ -187,14 +195,14 @@ export function MeetingsClient({ meetings: initialMeetings, profile }: Props) {
   return (
     <div className="space-y-6">
       {/* ── Header ── */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 animate-fade-in-up">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 dark:text-white">Meetings</h1>
+          <h1 className="text-2xl font-black text-slate-900 dark:text-white font-display">Meetings</h1>
           <p className="text-sm text-slate-500 mt-0.5">{upcoming.length} upcoming · {completedList.length} completed</p>
         </div>
         {isAdmin && (
           <button onClick={() => setShowNew(true)}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-2xl text-white text-sm font-bold transition-all hover:opacity-90 active:scale-95"
+            className="shine-hover press-scale flex items-center gap-2 px-5 py-2.5 rounded-2xl text-white text-sm font-bold transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
             style={{ background: "linear-gradient(135deg, #a855f7, #6366f1)", boxShadow: "0 8px 24px rgba(168,85,247,0.35)" }}>
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
@@ -217,7 +225,7 @@ export function MeetingsClient({ meetings: initialMeetings, profile }: Props) {
       <div className="flex gap-1 p-1 rounded-2xl w-fit" style={{ background: "rgba(99,102,241,0.06)", border: "1px solid rgba(99,102,241,0.12)" }}>
         {filterTabs.map((f) => (
           <button key={f.key} onClick={() => setFilter(f.key)}
-            className="px-4 py-2 rounded-xl text-xs font-bold transition-all"
+            className="press-scale px-4 py-2 rounded-xl text-xs font-bold transition-all duration-200"
             style={filter === f.key
               ? { background: "linear-gradient(135deg, #a855f7, #6366f1)", color: "white", boxShadow: "0 4px 12px rgba(168,85,247,0.3)" }
               : { color: "#64748b" }}>
@@ -239,13 +247,14 @@ export function MeetingsClient({ meetings: initialMeetings, profile }: Props) {
           <p className="text-sm text-slate-400">Try a different filter</p>
         </div>
       ) : (
-        <div className="space-y-3">
-          {filtered.map((meeting) => {
+        <div className="space-y-3 stagger-in">
+          {filtered.map((meeting, i) => {
             const sc = STATUS_CONFIG[meeting.status] ?? STATUS_CONFIG.scheduled;
             const isConfirmingDelete = confirmDeleteId === meeting.id;
             return (
               <div key={meeting.id}
-                className="rounded-2xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
+                className="card-hover rounded-2xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-elevated"
+                style={{ ["--stagger" as string]: Math.min(i, 10) }}>
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
                   <div className="space-y-1.5 flex-1 min-w-0">
                     <div className="flex items-center gap-3 flex-wrap">
@@ -379,7 +388,7 @@ export function MeetingsClient({ meetings: initialMeetings, profile }: Props) {
                 Cancel
               </button>
               <button type="submit" disabled={submitting}
-                className="px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90 disabled:opacity-60"
+                className="shine-hover press-scale px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg disabled:opacity-60"
                 style={{ background: "linear-gradient(135deg, #a855f7, #6366f1)", boxShadow: "0 4px 14px rgba(168,85,247,0.35)" }}>
                 {submitting ? "Saving…" : "Schedule"}
               </button>
@@ -443,7 +452,7 @@ export function MeetingsClient({ meetings: initialMeetings, profile }: Props) {
                 Cancel
               </button>
               <button type="submit" disabled={editSubmitting}
-                className="px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90 disabled:opacity-60"
+                className="shine-hover press-scale px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg disabled:opacity-60"
                 style={{ background: "linear-gradient(135deg, #a855f7, #6366f1)", boxShadow: "0 4px 14px rgba(168,85,247,0.35)" }}>
                 {editSubmitting ? "Saving…" : "Save Changes"}
               </button>

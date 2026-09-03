@@ -152,41 +152,42 @@ export default function OnboardingPage() {
   const progress = ((step + 1) / STEPS.length) * 100;
 
   return (
-    <Card className="border-border/50 shadow-lg">
+    <Card className="border-border/50 shadow-elevated-lg animate-scale-in">
       <CardHeader>
         <div className="flex items-center justify-between mb-1">
           {STEPS.map((s, i) => (
             <div key={s} className="flex items-center gap-1">
-              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold transition-colors ${
-                i < step ? "bg-primary text-primary-foreground" :
-                i === step ? "bg-primary text-primary-foreground" :
+              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 ${
+                i < step ? "bg-primary text-primary-foreground scale-100" :
+                i === step ? "bg-primary text-primary-foreground scale-110 ring-glow-purple" :
                 "bg-muted text-muted-foreground"
               }`}>
-                {i < step ? "✓" : i + 1}
+                {i < step ? <span className="animate-pop-in">✓</span> : i + 1}
               </div>
-              <span className={`text-xs hidden sm:inline ${i === step ? "text-foreground font-medium" : "text-muted-foreground"}`}>
+              <span className={`text-xs hidden sm:inline transition-colors duration-300 ${i === step ? "text-foreground font-medium" : "text-muted-foreground"}`}>
                 {s}
               </span>
-              {i < STEPS.length - 1 && <div className={`h-px w-8 sm:w-16 mx-1 ${i < step ? "bg-primary" : "bg-muted"}`} />}
+              {i < STEPS.length - 1 && <div className={`h-px w-8 sm:w-16 mx-1 transition-colors duration-500 ${i < step ? "bg-primary" : "bg-muted"}`} />}
             </div>
           ))}
         </div>
-        <div className="h-1 w-full bg-muted rounded-full mt-3">
-          <div className="h-1 bg-primary rounded-full transition-all" style={{ width: `${progress}%` }} />
+        <div className="h-1.5 w-full bg-muted rounded-full mt-3 overflow-hidden">
+          <div className="h-1.5 rounded-full transition-all duration-500 ease-out"
+            style={{ width: `${progress}%`, background: "linear-gradient(90deg, #a855f7, #6366f1)" }} />
         </div>
-        <CardTitle className="text-xl font-bold mt-4">
+        <CardTitle key={`title-${step}`} className="text-xl font-bold mt-4 font-display animate-fade-in-up">
           {step === 0 && "Set your password"}
           {step === 1 && "Tell us about you"}
           {step === 2 && "Your business"}
         </CardTitle>
-        <CardDescription>
+        <CardDescription key={`desc-${step}`} className="animate-fade-in-up delay-75">
           {step === 0 && `Setting up account for ${userEmail}`}
           {step === 1 && "Your name and chapter details"}
           {step === 2 && "Help members know what you do"}
         </CardDescription>
       </CardHeader>
 
-      <CardContent className="space-y-4">
+      <CardContent key={`content-${step}`} className="space-y-4 animate-fade-in-up delay-100">
         {error && (
           <Alert variant="destructive">
             <p className="text-sm">{error}</p>
@@ -257,7 +258,7 @@ export default function OnboardingPage() {
                   <Button
                     type="button" variant="outline" onClick={handleSendOtp}
                     disabled={sendingOtp || !form.phone.trim()}
-                    className="whitespace-nowrap text-purple-600 border-purple-300 hover:bg-purple-50">
+                    className="whitespace-nowrap text-purple-600 border-purple-300 hover:bg-purple-50 press-scale">
                     {sendingOtp ? "Sending…" : otpSent ? "Resend" : "Send OTP"}
                   </Button>
                 )}
@@ -276,7 +277,7 @@ export default function OnboardingPage() {
                   <Button
                     type="button" onClick={handleVerifyOtp}
                     disabled={verifyingOtp || otp.length < 4}
-                    className="whitespace-nowrap bg-emerald-600 hover:bg-emerald-700 text-white">
+                    className="whitespace-nowrap bg-emerald-600 hover:bg-emerald-700 text-white press-scale shine-hover">
                     {verifyingOtp ? "Verifying…" : "Verify"}
                   </Button>
                 </div>
@@ -358,12 +359,17 @@ export default function OnboardingPage() {
 
       <CardFooter className="flex gap-3">
         {step > 0 && (
-          <Button variant="outline" className="flex-1" onClick={() => setStep((s) => s - 1)} disabled={loading}>
+          <Button variant="outline" className="flex-1 press-scale" onClick={() => setStep((s) => s - 1)} disabled={loading}>
             Back
           </Button>
         )}
-        <Button className="flex-1" onClick={handleNext} disabled={loading}>
-          {loading ? "Saving…" : step === 2 ? "Complete Setup" : "Continue"}
+        <Button className="flex-1 shine-hover press-scale" onClick={handleNext} disabled={loading}>
+          {loading ? (
+            <span className="flex items-center justify-center gap-2">
+              <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+              Saving…
+            </span>
+          ) : step === 2 ? "Complete Setup" : "Continue"}
         </Button>
       </CardFooter>
     </Card>

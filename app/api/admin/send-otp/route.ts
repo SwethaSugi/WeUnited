@@ -16,7 +16,12 @@ export async function POST(req: NextRequest) {
         "Content-Type": "application/json",
         apikey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
       },
-      body: JSON.stringify({ phone: e164, create_user: false }),
+      // create_user: true — Supabase's phone-OTP endpoint refuses to even
+      // send a code for a phone with no existing account when this is
+      // false ("Signups not allowed for otp"), which is the case for
+      // basically every first-time verification. The shadow auth user this
+      // creates is cleaned up in verify-otp right after the code checks out.
+      body: JSON.stringify({ phone: e164, create_user: true }),
     });
 
     if (!res.ok) {

@@ -94,13 +94,13 @@ export function VisitorsClient({ visitors, meetings, profile }: Props) {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 animate-fade-in-up">
         <div>
-          <h1 className="text-2xl font-black text-slate-900">Visitors</h1>
+          <h1 className="text-2xl font-black text-slate-900 font-display">Visitors</h1>
           <p className="text-sm text-slate-500 mt-0.5">{visitors.length} total · {converted} converted to members</p>
         </div>
         <button onClick={() => setShowNew(true)}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-2xl text-white text-sm font-bold transition-all hover:opacity-90 active:scale-95"
+          className="shine-hover press-scale flex items-center gap-2 px-5 py-2.5 rounded-2xl text-white text-sm font-bold transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
           style={{ background: "linear-gradient(135deg, #a855f7, #6366f1)", boxShadow: "0 8px 24px rgba(168,85,247,0.35)" }}>
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
@@ -125,12 +125,12 @@ export function VisitorsClient({ visitors, meetings, profile }: Props) {
 
       {/* Stats pills */}
       <div className="flex gap-3">
-        <div className="flex items-center gap-2 px-4 py-2 rounded-2xl"
+        <div className="flex items-center gap-2 px-4 py-2 rounded-2xl transition-transform duration-300 hover:scale-105"
           style={{ background: "linear-gradient(135deg, rgba(99,102,241,0.08), rgba(168,85,247,0.08))", border: "1px solid rgba(99,102,241,0.15)" }}>
-          <span className="w-2 h-2 rounded-full" style={{ background: "#6366f1" }} />
+          <span className="w-2 h-2 rounded-full animate-glow-pulse" style={{ background: "#6366f1" }} />
           <span className="text-xs font-bold" style={{ color: "#6366f1" }}>{visitors.length} visitors</span>
         </div>
-        <div className="flex items-center gap-2 px-4 py-2 rounded-2xl"
+        <div className="flex items-center gap-2 px-4 py-2 rounded-2xl transition-transform duration-300 hover:scale-105"
           style={{ background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.2)" }}>
           <span className="w-2 h-2 rounded-full" style={{ background: "#22c55e" }} />
           <span className="text-xs font-bold" style={{ color: "#16a34a" }}>{converted} converted</span>
@@ -150,15 +150,16 @@ export function VisitorsClient({ visitors, meetings, profile }: Props) {
           <p className="text-sm text-slate-400">Try a different search or add one</p>
         </div>
       ) : (
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 stagger-in">
           {filtered.map((v: VisitorRow, i: number) => {
             const grad = VISITOR_GRADIENTS[i % VISITOR_GRADIENTS.length];
             return (
               <div key={v.id}
-                className="rounded-2xl border border-slate-100 bg-white p-5 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
+                className="card-hover rounded-2xl border border-slate-100 bg-white p-5 shadow-elevated"
+                style={{ ["--stagger" as string]: Math.min(i, 12) }}>
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-2xl flex items-center justify-center text-sm font-black text-white shrink-0"
+                    <div className="w-10 h-10 rounded-2xl flex items-center justify-center text-sm font-black text-white shrink-0 transition-transform duration-300 hover:scale-105 hover:rotate-3"
                       style={{ background: grad }}>
                       {v.full_name[0].toUpperCase()}
                     </div>
@@ -303,7 +304,7 @@ export function VisitorsClient({ visitors, meetings, profile }: Props) {
                 Cancel
               </button>
               <button type="submit" disabled={submitting}
-                className="px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90 disabled:opacity-60"
+                className="shine-hover press-scale px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg disabled:opacity-60"
                 style={{ background: "linear-gradient(135deg, #a855f7, #6366f1)", boxShadow: "0 4px 14px rgba(168,85,247,0.35)" }}>
                 {submitting ? "Saving…" : "Add Visitor"}
               </button>

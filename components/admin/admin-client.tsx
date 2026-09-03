@@ -204,7 +204,7 @@ export function AdminClient({ adminProfile, members, referrals, meetings, visito
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
         style={{ animation: "fadeUp .3s ease both" }}>
         <div>
-          <h1 className="text-2xl font-extrabold tracking-tight"
+          <h1 className="text-2xl font-extrabold tracking-tight font-display"
             style={{ background: "linear-gradient(135deg,#6366f1,#a855f7)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
             Admin Panel
           </h1>
@@ -212,7 +212,7 @@ export function AdminClient({ adminProfile, members, referrals, meetings, visito
         </div>
         {adminProfile.role === "super_admin" && (
           <Link href="/admin/create-user">
-            <button className="action-btn inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white"
+            <button className="shine-hover press-scale action-btn inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white hover:shadow-lg"
               style={{ background: "linear-gradient(135deg,#a855f7,#6366f1)", boxShadow: "0 4px 16px rgba(168,85,247,0.35)" }}>
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
@@ -226,7 +226,7 @@ export function AdminClient({ adminProfile, members, referrals, meetings, visito
       {/* ── KPI Cards ── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {KPI.map((k, i) => (
-          <div key={k.title} className="kpi-card rounded-2xl p-4 border border-border/40 bg-card cursor-default"
+          <div key={k.title} className="kpi-card shine-hover rounded-2xl p-4 border border-border/40 bg-card cursor-default"
             style={{ animationDelay: `${i * 70}ms`, boxShadow: `0 4px 24px ${k.glow}` }}>
             <div className="flex items-start justify-between mb-4">
               <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
@@ -262,7 +262,7 @@ export function AdminClient({ adminProfile, members, referrals, meetings, visito
 
         {/* ── Members Tab ── */}
         <TabsContent value="members" className="tab-content mt-4">
-          <div className="rounded-2xl border border-border/50 bg-card overflow-hidden">
+          <div className="rounded-2xl border border-border/50 bg-card overflow-hidden shadow-elevated">
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-5 py-4 border-b border-border/50">
               <div>
@@ -434,7 +434,7 @@ export function AdminClient({ adminProfile, members, referrals, meetings, visito
 
         {/* ── Referrals Tab ── */}
         <TabsContent value="referrals" className="tab-content mt-4">
-          <div className="rounded-2xl border border-border/50 bg-card overflow-hidden">
+          <div className="rounded-2xl border border-border/50 bg-card overflow-hidden shadow-elevated">
             <div className="px-5 py-4 border-b border-border/50">
               <h2 className="text-sm font-bold">All Chapter Referrals</h2>
             </div>
@@ -463,7 +463,7 @@ export function AdminClient({ adminProfile, members, referrals, meetings, visito
 
         {/* ── Meetings Tab ── */}
         <TabsContent value="meetings" className="tab-content mt-4">
-          <div className="rounded-2xl border border-border/50 bg-card overflow-hidden">
+          <div className="rounded-2xl border border-border/50 bg-card overflow-hidden shadow-elevated">
             <div className="px-5 py-4 border-b border-border/50">
               <h2 className="text-sm font-bold">Meeting Management</h2>
             </div>
@@ -503,7 +503,7 @@ export function AdminClient({ adminProfile, members, referrals, meetings, visito
 
         {/* ── Visitors Tab ── */}
         <TabsContent value="visitors" className="tab-content mt-4">
-          <div className="rounded-2xl border border-border/50 bg-card overflow-hidden">
+          <div className="rounded-2xl border border-border/50 bg-card overflow-hidden shadow-elevated">
             <div className="px-5 py-4 border-b border-border/50">
               <h2 className="text-sm font-bold">Visitor Tracking</h2>
             </div>

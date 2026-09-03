@@ -64,8 +64,8 @@ export default function LoginPage() {
   return (
     <div>
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-black text-slate-900 dark:text-white mb-2">Welcome back 👋</h1>
+      <div className="mb-8 animate-fade-in-up">
+        <h1 className="text-3xl font-black text-slate-900 dark:text-white mb-2 font-display" style={{ textWrap: "balance" as any }}>Welcome back 👋</h1>
         <p className="text-slate-500 dark:text-slate-400 text-sm">Sign in to your We United account</p>
       </div>
 
@@ -95,7 +95,7 @@ export default function LoginPage() {
 
       <form onSubmit={handleLogin} className="space-y-5">
         {/* Email */}
-        <div className="space-y-2">
+        <div className="space-y-2 animate-fade-in-up delay-75">
           <Label className="text-sm font-semibold text-slate-700 dark:text-slate-300" htmlFor="email">Email address</Label>
           <Input
             id="email" type="email" placeholder="you@example.com"
@@ -106,7 +106,7 @@ export default function LoginPage() {
         </div>
 
         {/* Password */}
-        <div className="space-y-2">
+        <div className="space-y-2 animate-fade-in-up delay-150">
           <div className="flex items-center justify-between">
             <Label className="text-sm font-semibold text-slate-700 dark:text-slate-300" htmlFor="password">Password</Label>
             <Link href="/forgot-password" className="text-xs font-semibold text-purple-600 hover:text-purple-500 transition-colors">
@@ -138,7 +138,7 @@ export default function LoginPage() {
 
         {/* Submit */}
         <Button type="submit" disabled={loading}
-          className="w-full h-12 rounded-xl font-bold text-sm text-white border-0 transition-all duration-300 hover:scale-[1.02] hover:-translate-y-0.5 disabled:opacity-60 disabled:scale-100 disabled:translate-y-0"
+          className="w-full h-12 rounded-xl font-bold text-sm text-white border-0 shine-hover press-scale transition-all duration-300 hover:scale-[1.02] hover:-translate-y-0.5 disabled:opacity-60 disabled:scale-100 disabled:translate-y-0 animate-fade-in-up delay-200"
           style={{ background: "linear-gradient(135deg, #a855f7, #6366f1)", boxShadow: "0 8px 24px rgba(168,85,247,0.35)" }}>
           {loading ? (
             <span className="flex items-center justify-center gap-2.5">
@@ -149,7 +149,7 @@ export default function LoginPage() {
         </Button>
       </form>
 
-      <p className="mt-6 text-sm text-center text-slate-500">
+      <p className="mt-6 text-sm text-center text-slate-500 animate-fade-in-up delay-300">
         Don&apos;t have an account?{" "}
         <Link href="/register" className="font-bold text-purple-600 hover:text-purple-500 transition-colors">
           Create one

@@ -20,13 +20,13 @@ export default function Home() {
       {/* ── Navbar ── */}
       <nav className="relative z-20 flex items-center justify-between px-6 py-5 max-w-7xl mx-auto w-full animate-fade-in">
         <div className="flex items-center gap-3">
-          <div className="relative h-10 w-10 rounded-2xl flex items-center justify-center"
+          <div className="relative h-10 w-10 rounded-2xl flex items-center justify-center transition-transform duration-300 hover:scale-110 hover:rotate-3"
             style={{ background: "linear-gradient(135deg, #a855f7, #6366f1)" }}>
             <span className="text-white font-black text-xs tracking-tight">WU</span>
             <div className="absolute inset-0 rounded-2xl opacity-50 blur-md"
               style={{ background: "linear-gradient(135deg, #a855f7, #6366f1)" }} />
           </div>
-          <span className="text-xl font-black text-slate-900 dark:text-white tracking-tight">We United</span>
+          <span className="text-xl font-black text-slate-900 dark:text-white tracking-tight font-display">We United</span>
         </div>
         <div className="flex items-center gap-2">
           <Link href="/login"
@@ -34,7 +34,7 @@ export default function Home() {
             Login
           </Link>
           <Link href="/register"
-            className="relative px-6 py-2.5 text-sm font-bold text-white rounded-xl overflow-hidden group transition-all duration-300 hover:scale-105"
+            className="relative px-6 py-2.5 text-sm font-bold text-white rounded-xl overflow-hidden group shine-hover transition-all duration-300 hover:scale-105"
             style={{ background: "linear-gradient(135deg, #a855f7, #6366f1)" }}>
             <span className="relative z-10">Get Started</span>
             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
@@ -61,7 +61,7 @@ export default function Home() {
         </div>
 
         {/* Headline */}
-        <h1 className="animate-fade-in-up delay-150 text-6xl sm:text-7xl lg:text-8xl font-black tracking-tight leading-none mb-6">
+        <h1 className="animate-fade-in-up delay-150 text-6xl sm:text-7xl lg:text-8xl font-black tracking-tight leading-none mb-6 font-display" style={{ textWrap: "balance" as any }}>
           <span className="text-slate-900 dark:text-white">Connect.</span>
           <br />
           <span className="shimmer-text">Refer. Grow.</span>
@@ -74,7 +74,7 @@ export default function Home() {
         {/* CTA Buttons */}
         <div className="animate-fade-in-up delay-400 flex flex-col sm:flex-row gap-4 mb-10">
           <Link href="/register"
-            className="relative inline-flex items-center justify-center gap-2 px-8 py-4 text-base font-bold text-white rounded-2xl overflow-hidden group transition-all duration-300 hover:scale-105 hover:-translate-y-0.5"
+            className="relative inline-flex items-center justify-center gap-2 px-8 py-4 text-base font-bold text-white rounded-2xl overflow-hidden group press-scale transition-all duration-300 hover:scale-105 hover:-translate-y-0.5"
             style={{ background: "linear-gradient(135deg, #a855f7, #6366f1, #38bdf8)", backgroundSize: "200% 200%" }}>
             <span className="relative z-10">Start for Free</span>
             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -82,9 +82,12 @@ export default function Home() {
             {/* Glow */}
             <div className="absolute inset-0 blur-xl opacity-40"
               style={{ background: "linear-gradient(135deg, #a855f7, #6366f1)" }} />
+            {/* Shine sweep */}
+            <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out"
+              style={{ background: "linear-gradient(115deg, transparent 20%, rgba(255,255,255,0.4) 50%, transparent 80%)" }} />
           </Link>
           <Link href="/login"
-            className="inline-flex items-center justify-center gap-2 px-8 py-4 text-base font-bold rounded-2xl border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 bg-white/80 dark:bg-slate-900/80 backdrop-blur hover:border-purple-300 dark:hover:border-purple-700 hover:bg-white dark:hover:bg-slate-900 transition-all duration-300 hover:scale-105 hover:-translate-y-0.5">
+            className="inline-flex items-center justify-center gap-2 px-8 py-4 text-base font-bold rounded-2xl border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 bg-white/80 dark:bg-slate-900/80 backdrop-blur press-scale hover:border-purple-300 dark:hover:border-purple-700 hover:bg-white dark:hover:bg-slate-900 transition-all duration-300 hover:scale-105 hover:-translate-y-0.5">
             Sign In
           </Link>
         </div>
@@ -129,7 +132,7 @@ export default function Home() {
                 style={{ boxShadow: `0 8px 20px ${f.shadow}` }}>
                 {f.icon}
               </div>
-              <h3 className="font-bold text-lg text-slate-900 dark:text-white mb-2">{f.title}</h3>
+              <h3 className="font-bold text-lg text-slate-900 dark:text-white mb-2 font-display">{f.title}</h3>
               <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">{f.desc}</p>
               {/* Hover glow */}
               <div className={`absolute inset-0 opacity-0 group-hover:opacity-5 bg-gradient-to-br ${f.gradient} transition-opacity duration-400 rounded-3xl`} />
@@ -145,8 +148,9 @@ export default function Home() {
             { icon: <Globe className="w-4 h-4" />, label: "Multi-Chapter Support", color: "#10b981", bg: "rgba(16,185,129,0.08)" },
           ].map((f, i) => (
             <div key={f.label}
-              className={`animate-fade-in-up delay-${(i + 4) * 100} flex items-center gap-3 px-5 py-3.5 rounded-2xl border border-slate-100 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 backdrop-blur`}>
-              <span className="flex-shrink-0 p-2 rounded-xl" style={{ color: f.color, background: f.bg }}>{f.icon}</span>
+              className="animate-fade-in-up flex items-center gap-3 px-5 py-3.5 rounded-2xl border border-slate-100 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 backdrop-blur card-hover"
+              style={{ animationDelay: `${(i + 4) * 100}ms`, animationFillMode: "backwards" }}>
+              <span className="flex-shrink-0 p-2 rounded-xl transition-transform duration-300 hover:scale-110" style={{ color: f.color, background: f.bg }}>{f.icon}</span>
               <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">{f.label}</span>
             </div>
           ))}
@@ -155,7 +159,7 @@ export default function Home() {
 
       {/* ── Footer ── */}
       <footer className="relative z-10 border-t border-slate-200/60 dark:border-slate-800/60 py-6 text-center text-sm text-slate-400">
-        © 2025 <span className="font-semibold text-purple-600 dark:text-purple-400">We United</span>. Built with ❤️ · Next.js · Supabase · Tailwind
+        © 2026 <span className="font-semibold text-purple-600 dark:text-purple-400 font-display">We United</span>. Built with ❤️ · Next.js · Supabase · Tailwind
       </footer>
     </div>
   );

@@ -100,9 +100,9 @@ export function DashboardClient({ profile, stats, recentReferrals, upcomingMeeti
     <div className="space-y-6">
 
       {/* ── Header ── */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 animate-fade-in-up">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 dark:text-white">
+          <h1 className="text-2xl font-black text-slate-900 dark:text-white font-display">
             {greeting}, <span className="shimmer-text">{firstName}</span>! 👋
           </h1>
           <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
@@ -112,11 +112,11 @@ export function DashboardClient({ profile, stats, recentReferrals, upcomingMeeti
         </div>
         <div className="flex gap-2">
           <Link href="/referrals"
-            className="px-4 py-2 text-sm font-bold rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-purple-300 hover:text-purple-600 transition-all duration-200">
+            className="px-4 py-2 text-sm font-bold rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-purple-300 hover:text-purple-600 hover:-translate-y-0.5 transition-all duration-200">
             View Referrals
           </Link>
           <Link href="/referrals?new=true"
-            className="px-4 py-2 text-sm font-bold rounded-xl text-white transition-all duration-200 hover:scale-105"
+            className="shine-hover press-scale px-4 py-2 text-sm font-bold rounded-xl text-white transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
             style={{ background: "linear-gradient(135deg, #a855f7, #6366f1)", boxShadow: "0 4px 14px rgba(168,85,247,0.4)" }}>
             + New Referral
           </Link>
@@ -124,23 +124,23 @@ export function DashboardClient({ profile, stats, recentReferrals, upcomingMeeti
       </div>
 
       {/* ── KPI Cards ── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {KPI_CARDS(stats).map((card) => (
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 stagger-in">
+        {KPI_CARDS(stats).map((card, i) => (
           <div key={card.title}
-            className="relative rounded-2xl p-5 overflow-hidden text-white group hover:-translate-y-1 transition-all duration-300"
-            style={{ background: card.gradient, boxShadow: `0 8px 24px ${card.shadow}` }}>
+            className="shine-hover relative rounded-2xl p-5 overflow-hidden text-white group hover:-translate-y-1.5 transition-all duration-300 ease-out"
+            style={{ background: card.gradient, boxShadow: `0 8px 24px ${card.shadow}`, ["--stagger" as string]: i }}>
             {/* Decorative circle */}
-            <div className="absolute -top-6 -right-6 w-24 h-24 rounded-full opacity-20"
+            <div className="absolute -top-6 -right-6 w-24 h-24 rounded-full opacity-20 transition-transform duration-500 group-hover:scale-125"
               style={{ background: "rgba(255,255,255,0.3)" }} />
             <div className="absolute -bottom-4 -right-4 w-16 h-16 rounded-full opacity-15"
               style={{ background: "rgba(255,255,255,0.4)" }} />
             <div className="relative">
-              <div className="w-9 h-9 rounded-xl flex items-center justify-center mb-3"
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center mb-3 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6"
                 style={{ background: card.iconBg }}>
                 {card.icon}
               </div>
               <p className="text-white/70 text-xs font-semibold mb-1">{card.title}</p>
-              <p className="text-3xl font-black">{card.value}</p>
+              <p className="text-3xl font-black font-display animate-count-up">{card.value}</p>
               <p className="text-white/60 text-xs mt-1">{card.sub}</p>
             </div>
           </div>
@@ -151,7 +151,7 @@ export function DashboardClient({ profile, stats, recentReferrals, upcomingMeeti
       <div className="grid lg:grid-cols-3 gap-6">
 
         {/* Recent Referrals */}
-        <div className="lg:col-span-2 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 overflow-hidden shadow-sm">
+        <div className="lg:col-span-2 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 overflow-hidden shadow-elevated animate-fade-in-up delay-100">
           <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-800">
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 rounded-lg flex items-center justify-center"
@@ -181,11 +181,13 @@ export function DashboardClient({ profile, stats, recentReferrals, upcomingMeeti
             </div>
           ) : (
             <div className="divide-y divide-slate-50 dark:divide-slate-800">
-              {recentReferrals.map((ref) => {
+              {recentReferrals.map((ref, i) => {
                 const s = STATUS_CONFIG[ref.status] ?? STATUS_CONFIG.pending;
                 return (
-                  <div key={ref.id} className="flex items-center gap-4 px-6 py-4 hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors group">
-                    <Avatar className="w-9 h-9 shrink-0 ring-2 ring-slate-100 dark:ring-slate-700">
+                  <div key={ref.id}
+                    className="flex items-center gap-4 px-6 py-4 hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors group animate-fade-in-up"
+                    style={{ animationDelay: `${i * 50}ms` }}>
+                    <Avatar className="w-9 h-9 shrink-0 ring-2 ring-slate-100 dark:ring-slate-700 transition-transform duration-300 group-hover:scale-105">
                       <AvatarImage src={ref.sender?.avatar_url} />
                       <AvatarFallback className="text-[10px] font-black text-white"
                         style={{ background: "linear-gradient(135deg, #a855f7, #6366f1)" }}>
@@ -216,7 +218,7 @@ export function DashboardClient({ profile, stats, recentReferrals, upcomingMeeti
         {/* Right column */}
         <div className="space-y-5">
           {/* Upcoming Meetings */}
-          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 overflow-hidden shadow-sm">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 overflow-hidden shadow-elevated animate-fade-in-up delay-150">
             <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-slate-800">
               <div className="flex items-center gap-2">
                 <div className="w-6 h-6 rounded-lg flex items-center justify-center" style={{ background: "rgba(52,211,153,0.12)" }}>
@@ -235,7 +237,7 @@ export function DashboardClient({ profile, stats, recentReferrals, upcomingMeeti
                 </div>
               ) : upcomingMeetings.map((meeting) => (
                 <Link key={meeting.id} href={`/meetings/${meeting.id}`}
-                  className="block p-3.5 rounded-xl border border-slate-100 dark:border-slate-700 hover:border-emerald-200 dark:hover:border-emerald-800 hover:bg-emerald-50/30 dark:hover:bg-emerald-950/20 transition-all duration-200 group">
+                  className="block p-3.5 rounded-xl border border-slate-100 dark:border-slate-700 hover:border-emerald-200 dark:hover:border-emerald-800 hover:bg-emerald-50/30 dark:hover:bg-emerald-950/20 hover:-translate-y-0.5 hover:shadow-sm transition-all duration-200 group">
                   <p className="text-sm font-bold text-slate-800 dark:text-white line-clamp-1 group-hover:text-emerald-700 transition-colors">{meeting.title}</p>
                   <p className="text-xs text-slate-400 mt-1">
                     {formatDate(meeting.meeting_date)}
@@ -247,7 +249,7 @@ export function DashboardClient({ profile, stats, recentReferrals, upcomingMeeti
           </div>
 
           {/* Quick Actions */}
-          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 overflow-hidden shadow-sm">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 overflow-hidden shadow-elevated animate-fade-in-up delay-200">
             <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-800">
               <h2 className="font-bold text-slate-800 dark:text-white text-sm">Quick Actions</h2>
             </div>

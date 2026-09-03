@@ -44,15 +44,45 @@ export async function POST(req: NextRequest) {
 
     // Delete from auth.users — this cascades to profiles via FK (if set up)
     // We also explicitly delete from profiles first to be safe
-    await supabaseAdmin.from("profiles").delete().eq("id", userId);
+    const { error: profileDeleteError } = await supabaseAdmin.from("profiles").delete().eq("id", userId);
+    if (profileDeleteError) {
+      console.error("remove-member: profiles delete failed:", profileDeleteError);
+      return NextResponse.json(
+        { error: `Could not remove member's profile data: ${profileDeleteError.message}` },
+        { status: 500 }
+      );
+    }
+
+    // Best-effort cleanup: remove any storage objects owned by this user (avatars/logos).
+    // A leftover storage.objects row referencing this user is a common cause of
+    // "Database error deleting user" since that table's owner FK isn't always cascaded.
+    for (const bucket of ["avatars", "logos"]) {
+      try {
+        const { data: files } = await supabaseAdmin.storage.from(bucket).list(userId);
+        if (files && files.length > 0) {
+          await supabaseAdmin.storage.from(bucket).remove(files.map((f) => `${userId}/${f.name}`));
+        }
+      } catch {
+        // Bucket may not exist — ignore and continue
+      }
+    }
 
     const { error: deleteError } = await supabaseAdmin.auth.admin.deleteUser(userId);
     if (deleteError) {
-      return NextResponse.json({ error: deleteError.message }, { status: 500 });
+      console.error("remove-member: auth.admin.deleteUser failed:", JSON.stringify(deleteError, null, 2));
+      return NextResponse.json(
+        {
+          error: deleteError.message,
+          detail:
+            "Check Supabase Dashboard → Logs → Postgres Logs around this time for the exact foreign-key constraint blocking this delete.",
+        },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json({ success: true });
   } catch (err: any) {
+    console.error("remove-member: unexpected error:", err);
     return NextResponse.json({ error: err.message ?? "Internal server error" }, { status: 500 });
   }
 }

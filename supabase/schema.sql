@@ -72,6 +72,9 @@ create table if not exists profiles (
   updated_at          timestamptz not null default now()
 );
 
+-- older live databases may predate this column — add it if missing
+alter table chapters add column if not exists chapter_admin_id uuid;
+
 -- add FK from chapters → profiles (chapter admin) — safe to re-run
 do $$ begin
   alter table chapters
@@ -406,6 +409,95 @@ drop policy if exists "notifications: insert" on notifications;
 create policy "notifications: insert"
   on notifications for insert to authenticated
   with check (true);
+
+
+-- ────────────────────────────────────────
+-- 6b. FK ON DELETE FIX-UP (idempotent — safe to re-run)
+-- ────────────────────────────────────────
+-- These tables were originally created before their ON DELETE clauses were
+-- added above. Because table creation above uses "create table if not
+-- exists", re-running this file does NOT retroactively fix an existing
+-- table's constraints — only a fresh table gets them. Run this block once
+-- (or as many times as needed) to bring an already-existing database's
+-- foreign keys in line with the CASCADE / SET NULL behavior declared above.
+-- Without this, removing a member fails with errors like:
+--   "update or delete on table "profiles" violates foreign key
+--    constraint "referrals_sender_id_fkey""
+
+-- Wrapped in DO blocks with exception handling: your live table/column names
+-- may not match this file 1:1 (e.g. a table created by hand, or renamed
+-- since). Each block fixes what it can and reports a NOTICE — instead of
+-- aborting the whole script — for anything that doesn't match, so you can
+-- see exactly what to adjust rather than the script dying on the first
+-- mismatch.
+
+do $$ begin
+  alter table referrals drop constraint if exists referrals_sender_id_fkey;
+  alter table referrals add constraint referrals_sender_id_fkey
+    foreign key (sender_id) references profiles(id) on delete cascade;
+exception when others then
+  raise notice 'SKIPPED referrals.sender_id: %', sqlerrm;
+end $$;
+
+do $$ begin
+  alter table referrals drop constraint if exists referrals_receiver_id_fkey;
+  alter table referrals add constraint referrals_receiver_id_fkey
+    foreign key (receiver_id) references profiles(id) on delete cascade;
+exception when others then
+  raise notice 'SKIPPED referrals.receiver_id: %', sqlerrm;
+end $$;
+
+do $$ begin
+  alter table meetings drop constraint if exists meetings_created_by_fkey;
+  alter table meetings add constraint meetings_created_by_fkey
+    foreign key (created_by) references profiles(id) on delete set null;
+exception when others then
+  raise notice 'SKIPPED meetings.created_by: %', sqlerrm;
+end $$;
+
+do $$ begin
+  alter table visitors drop constraint if exists visitors_invited_by_fkey;
+  alter table visitors add constraint visitors_invited_by_fkey
+    foreign key (invited_by) references profiles(id) on delete set null;
+exception when others then
+  raise notice 'SKIPPED visitors.invited_by: %', sqlerrm;
+end $$;
+
+do $$ begin
+  alter table attendance drop constraint if exists attendance_user_id_fkey;
+  alter table attendance add constraint attendance_user_id_fkey
+    foreign key (user_id) references profiles(id) on delete cascade;
+exception when others then
+  raise notice 'SKIPPED attendance.user_id: %', sqlerrm;
+end $$;
+
+do $$ begin
+  alter table attendance drop constraint if exists attendance_marked_by_fkey;
+  alter table attendance add constraint attendance_marked_by_fkey
+    foreign key (marked_by) references profiles(id) on delete set null;
+exception when others then
+  raise notice 'SKIPPED attendance.marked_by: %', sqlerrm;
+end $$;
+
+do $$ begin
+  alter table notifications drop constraint if exists notifications_user_id_fkey;
+  alter table notifications add constraint notifications_user_id_fkey
+    foreign key (user_id) references profiles(id) on delete cascade;
+exception when others then
+  raise notice 'SKIPPED notifications.user_id: %', sqlerrm;
+end $$;
+
+do $$ begin
+  alter table chapters drop constraint if exists fk_chapter_admin;
+  alter table chapters add constraint fk_chapter_admin
+    foreign key (chapter_admin_id) references profiles(id) on delete set null;
+exception when others then
+  raise notice 'SKIPPED chapters.chapter_admin_id: %', sqlerrm;
+end $$;
+
+-- After running, check the "Messages"/"Notices" panel in the SQL editor —
+-- any table listed there has a real mismatch (missing column, different
+-- name, etc.) that still needs a manual look via Table Editor.
 
 
 -- ────────────────────────────────────────

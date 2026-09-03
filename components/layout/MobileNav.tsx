@@ -41,7 +41,7 @@ export function MobileNav() {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button variant="ghost" size="icon" className="lg:hidden w-9 h-9 rounded-xl text-slate-600 hover:bg-slate-100">
+        <Button variant="ghost" size="icon" className="lg:hidden w-9 h-9 rounded-xl text-slate-600 hover:bg-slate-100 active:scale-90 transition-transform">
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
           </svg>
@@ -64,17 +64,17 @@ export function MobileNav() {
         {/* Nav */}
         <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
           <p className="px-3 mb-3 text-[10px] font-bold text-white/25 uppercase tracking-widest">Navigation</p>
-          {NAV_ITEMS.map((item) => {
+          {NAV_ITEMS.map((item, i) => {
             const active = item.href === "/dashboard"
               ? pathname === "/dashboard"
               : pathname.startsWith(item.href);
             return (
               <Link key={item.href} href={item.href} onClick={() => setOpen(false)}
                 className={cn(
-                  "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200",
+                  "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 animate-fade-in-up active:scale-[0.98]",
                   active ? "text-white" : "text-white/40 hover:text-white/70"
                 )}
-                style={active ? { background: `${item.color}18`, boxShadow: `0 0 16px ${item.color}20` } : {}}>
+                style={{ animationDelay: `${i * 45}ms`, ...(active ? { background: `${item.color}18`, boxShadow: `0 0 16px ${item.color}20` } : {}) }}>
                 <span className="w-2 h-2 rounded-full flex-shrink-0"
                   style={{ background: active ? item.color : "rgba(255,255,255,0.15)" }} />
                 {item.label}

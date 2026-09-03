@@ -47,14 +47,14 @@ export function MembersClient({ members, currentProfile }: Props) {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 animate-fade-in-up">
         <div>
-          <h1 className="text-2xl font-black text-slate-900">Member Directory</h1>
+          <h1 className="text-2xl font-black text-slate-900 font-display">Member Directory</h1>
           <p className="text-sm text-slate-500 mt-0.5">{members.length} active members in your chapter</p>
         </div>
-        <div className="flex items-center gap-2 px-4 py-2 rounded-2xl"
+        <div className="flex items-center gap-2 px-4 py-2 rounded-2xl transition-transform duration-300 hover:scale-105"
           style={{ background: "linear-gradient(135deg, rgba(99,102,241,0.08), rgba(168,85,247,0.08))", border: "1px solid rgba(99,102,241,0.15)" }}>
-          <span className="w-2 h-2 rounded-full" style={{ background: "#6366f1" }} />
+          <span className="w-2 h-2 rounded-full animate-glow-pulse" style={{ background: "#6366f1" }} />
           <span className="text-xs font-bold" style={{ color: "#6366f1" }}>{filtered.length} shown</span>
         </div>
       </div>
@@ -76,7 +76,7 @@ export function MembersClient({ members, currentProfile }: Props) {
         <div className="flex gap-2 flex-wrap">
           {categories.slice(0, 5).map((cat) => (
             <button key={cat} onClick={() => setCategoryFilter(cat)}
-              className="px-3 h-10 rounded-xl text-xs font-bold transition-all"
+              className="press-scale px-3 h-10 rounded-xl text-xs font-bold transition-all duration-200 hover:-translate-y-0.5"
               style={categoryFilter === cat
                 ? { background: "linear-gradient(135deg, #a855f7, #6366f1)", color: "white", boxShadow: "0 4px 12px rgba(168,85,247,0.3)" }
                 : { background: "white", color: "#64748b", border: "1px solid #e2e8f0" }}>
@@ -108,23 +108,24 @@ export function MembersClient({ members, currentProfile }: Props) {
           <p className="text-sm text-slate-400">Try a different search or filter</p>
         </div>
       ) : (
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 stagger-in">
           {filtered.map((member, i) => {
             const role = ROLE_CONFIG[member.role] ?? ROLE_CONFIG.member;
             const grad = AVATAR_GRADIENTS[i % AVATAR_GRADIENTS.length];
             const isMe = member.id === currentProfile.id;
             return (
               <div key={member.id}
-                className="rounded-2xl border border-slate-100 bg-white p-5 flex flex-col items-center text-center gap-3 hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5">
+                className="card-hover rounded-2xl border border-slate-100 bg-white p-5 flex flex-col items-center text-center gap-3 shadow-elevated"
+                style={{ ["--stagger" as string]: Math.min(i, 12) }}>
                 <div className="relative">
-                  <Avatar className="w-16 h-16">
+                  <Avatar className="w-16 h-16 transition-transform duration-300 hover:scale-105">
                     <AvatarImage src={member.avatar_url ?? undefined} />
                     <AvatarFallback className="text-lg font-black text-white" style={{ background: grad }}>
                       {initials(member.full_name)}
                     </AvatarFallback>
                   </Avatar>
                   {isMe && (
-                    <span className="absolute -bottom-1 -right-1 text-[9px] font-black text-white px-1.5 py-0.5 rounded-full"
+                    <span className="absolute -bottom-1 -right-1 text-[9px] font-black text-white px-1.5 py-0.5 rounded-full animate-pop-in"
                       style={{ background: "linear-gradient(135deg, #a855f7, #6366f1)" }}>YOU</span>
                   )}
                 </div>
@@ -147,13 +148,13 @@ export function MembersClient({ members, currentProfile }: Props) {
                 <div className="flex gap-2 w-full mt-1">
                   {member.phone && (
                     <a href={`tel:${member.phone}`}
-                      className="flex-1 h-8 rounded-xl text-xs font-bold flex items-center justify-center transition-all"
+                      className="press-scale flex-1 h-8 rounded-xl text-xs font-bold flex items-center justify-center transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm"
                       style={{ background: "rgba(52,211,153,0.1)", color: "#059669", border: "1px solid rgba(52,211,153,0.2)" }}>
                       Call
                     </a>
                   )}
                   <Link href={`/referrals?new=true&receiver=${member.id}`}
-                    className="flex-1 h-8 rounded-xl text-xs font-bold flex items-center justify-center transition-all hover:opacity-90"
+                    className="shine-hover press-scale flex-1 h-8 rounded-xl text-xs font-bold flex items-center justify-center transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
                     style={{ background: "linear-gradient(135deg, #a855f7, #6366f1)", color: "white" }}>
                     Refer
                   </Link>

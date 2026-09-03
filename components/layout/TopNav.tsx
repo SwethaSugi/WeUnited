@@ -71,19 +71,19 @@ export function TopNav() {
         <DropdownMenu onOpenChange={(open) => { if (open) fetchNotifications(); }}>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon"
-              className="relative w-9 h-9 rounded-xl text-slate-500 hover:text-slate-700 hover:bg-slate-100 transition-all">
+              className="relative w-9 h-9 rounded-xl text-slate-500 hover:text-slate-700 hover:bg-slate-100 hover:scale-105 active:scale-95 transition-all duration-200">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
               </svg>
               {unreadCount > 0 && (
-                <span className="absolute top-1.5 right-1.5 w-3.5 h-3.5 text-white text-[9px] font-black rounded-full flex items-center justify-center"
-                  style={{ background: "linear-gradient(135deg, #f43f5e, #ef4444)" }}>
+                <span className="absolute top-1.5 right-1.5 w-3.5 h-3.5 text-white text-[9px] font-black rounded-full flex items-center justify-center animate-pop-in"
+                  style={{ background: "linear-gradient(135deg, #f43f5e, #ef4444)", boxShadow: "0 0 0 2px rgba(255,255,255,0.9)" }}>
                   {unreadCount > 9 ? "9+" : unreadCount}
                 </span>
               )}
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-80 shadow-2xl rounded-2xl border border-slate-100 p-2">
+          <DropdownMenuContent align="end" className="w-80 shadow-elevated-lg rounded-2xl border border-slate-100 p-2">
             <DropdownMenuLabel className="flex items-center justify-between px-2 pb-2">
               <span className="font-bold text-slate-800">Notifications</span>
               {unreadCount > 0 && (
@@ -102,8 +102,10 @@ export function TopNav() {
                 <p className="text-sm font-semibold text-slate-600">All caught up!</p>
                 <p className="text-xs text-slate-400 mt-1">No new notifications</p>
               </div>
-            ) : notifications.map((n) => (
-              <DropdownMenuItem key={n.id} className="flex flex-col items-start gap-1 py-3 px-3 rounded-xl">
+            ) : notifications.map((n, i) => (
+              <DropdownMenuItem key={n.id}
+                className="flex flex-col items-start gap-1 py-3 px-3 rounded-xl animate-fade-in-up"
+                style={{ animationDelay: `${i * 40}ms` }}>
                 <span className="font-semibold text-sm text-slate-800">{n.title}</span>
                 <span className="text-xs text-slate-500 line-clamp-2">{n.message}</span>
               </DropdownMenuItem>
@@ -115,7 +117,7 @@ export function TopNav() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button className="flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl hover:bg-slate-100 transition-all duration-200 group">
-              <Avatar className="w-7 h-7 ring-2 ring-purple-200">
+              <Avatar className="w-7 h-7 ring-2 ring-purple-200 transition-all duration-300 group-hover:ring-purple-400 group-hover:scale-105">
                 <AvatarImage src={profile?.avatar_url ?? undefined} />
                 <AvatarFallback className="text-[10px] font-black text-white"
                   style={{ background: "linear-gradient(135deg, #a855f7, #6366f1)" }}>
@@ -130,7 +132,7 @@ export function TopNav() {
               </svg>
             </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-60 shadow-2xl rounded-2xl border border-slate-100 p-2">
+          <DropdownMenuContent align="end" className="w-60 shadow-elevated-lg rounded-2xl border border-slate-100 p-2">
             <DropdownMenuLabel className="px-2 pb-2">
               <p className="font-bold text-slate-800">{profile?.full_name}</p>
               <p className="text-xs text-slate-400 font-normal">{profile?.email}</p>

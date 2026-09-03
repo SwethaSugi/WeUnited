@@ -159,15 +159,15 @@ export function CreateUserClient({ chapters }: Props) {
       <div className="max-w-2xl mx-auto">
 
         {/* Header */}
-        <div className="flex items-center gap-4 mb-8">
+        <div className="flex items-center gap-4 mb-8 animate-fade-in-up">
           <Link href="/admin"
-            className="w-9 h-9 rounded-xl flex items-center justify-center border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-slate-500">
+            className="press-scale w-9 h-9 rounded-xl flex items-center justify-center border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 hover:-translate-x-0.5 transition-all duration-200 text-slate-500">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
           </Link>
           <div>
-            <h1 className="text-2xl font-black text-slate-900 dark:text-white">Create New User</h1>
+            <h1 className="text-2xl font-black text-slate-900 dark:text-white font-display">Create New User</h1>
             <p className="text-sm text-slate-500 mt-0.5">Super admin only — fill all details and verify phone via OTP</p>
           </div>
         </div>
@@ -338,7 +338,7 @@ export function CreateUserClient({ chapters }: Props) {
 
           {/* ── Submit ── */}
           <button type="submit" disabled={submitting}
-            className="w-full h-12 rounded-xl font-bold text-sm text-white border-0 transition-all duration-300 hover:scale-[1.02] hover:-translate-y-0.5 disabled:opacity-60 disabled:scale-100 disabled:translate-y-0"
+            className="shine-hover w-full h-12 rounded-xl font-bold text-sm text-white border-0 transition-all duration-300 hover:scale-[1.02] hover:-translate-y-0.5 hover:shadow-xl disabled:opacity-60 disabled:scale-100 disabled:translate-y-0"
             style={{ background: "linear-gradient(135deg, #a855f7, #6366f1)", boxShadow: "0 8px 24px rgba(168,85,247,0.35)" }}>
             {submitting
               ? <span className="flex items-center justify-center gap-2.5">
@@ -357,7 +357,7 @@ export function CreateUserClient({ chapters }: Props) {
 // ── Reusable section card ──────────────────────────────────────────────────
 function SectionCard({ title, icon, children }: { title: string; icon: string; children: React.ReactNode }) {
   return (
-    <div className="rounded-2xl border border-slate-200 dark:border-slate-700/60 bg-white dark:bg-slate-900/50 overflow-hidden">
+    <div className="rounded-2xl border border-slate-200 dark:border-slate-700/60 bg-white dark:bg-slate-900/50 overflow-hidden shadow-elevated animate-fade-in-up">
       <div className="px-5 py-3.5 border-b border-slate-100 dark:border-slate-800 flex items-center gap-2">
         <span className="text-base">{icon}</span>
         <h3 className="text-sm font-bold text-slate-700 dark:text-slate-300">{title}</h3>

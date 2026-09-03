@@ -51,7 +51,7 @@ export default function RegisterPage() {
             style={{ background: "linear-gradient(135deg, #34d399, #38bdf8)" }} />
         </div>
 
-        <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-2">Check your inbox! 📬</h2>
+        <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-2 font-display">Check your inbox! 📬</h2>
         <p className="text-slate-500 dark:text-slate-400 text-sm mb-6">
           We sent a sign-up link to <span className="font-bold text-slate-700 dark:text-slate-200">{email}</span>
         </p>
@@ -71,8 +71,8 @@ export default function RegisterPage() {
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="text-3xl font-black text-slate-900 dark:text-white mb-2">Create account ✨</h1>
+      <div className="mb-8 animate-fade-in-up">
+        <h1 className="text-3xl font-black text-slate-900 dark:text-white mb-2 font-display" style={{ textWrap: "balance" as any }}>Create account ✨</h1>
         <p className="text-slate-500 dark:text-slate-400 text-sm">Join We United and start building real business relationships</p>
       </div>
 
@@ -87,7 +87,7 @@ export default function RegisterPage() {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-5">
-        <div className="space-y-2">
+        <div className="space-y-2 animate-fade-in-up delay-75">
           <Label className="text-sm font-semibold text-slate-700 dark:text-slate-300" htmlFor="email">Email address</Label>
           <Input
             id="email" type="email" placeholder="you@company.com"
@@ -98,7 +98,7 @@ export default function RegisterPage() {
         </div>
 
         {/* What to expect */}
-        <div className="flex items-start gap-3 p-4 rounded-2xl"
+        <div className="flex items-start gap-3 p-4 rounded-2xl animate-fade-in-up delay-150 transition-transform duration-300 hover:scale-[1.01]"
           style={{ background: "rgba(99,102,241,0.05)", border: "1px solid rgba(99,102,241,0.15)" }}>
           <div className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center mt-0.5"
             style={{ background: "rgba(99,102,241,0.15)" }}>
@@ -112,7 +112,7 @@ export default function RegisterPage() {
         </div>
 
         <Button type="submit" disabled={loading}
-          className="w-full h-12 rounded-xl font-bold text-sm text-white border-0 transition-all duration-300 hover:scale-[1.02] hover:-translate-y-0.5 disabled:opacity-60 disabled:scale-100 disabled:translate-y-0"
+          className="w-full h-12 rounded-xl font-bold text-sm text-white border-0 shine-hover press-scale transition-all duration-300 hover:scale-[1.02] hover:-translate-y-0.5 disabled:opacity-60 disabled:scale-100 disabled:translate-y-0 animate-fade-in-up delay-200"
           style={{ background: "linear-gradient(135deg, #34d399, #059669)", boxShadow: "0 8px 24px rgba(52,211,153,0.35)" }}>
           {loading ? (
             <span className="flex items-center justify-center gap-2.5">
@@ -123,7 +123,7 @@ export default function RegisterPage() {
         </Button>
       </form>
 
-      <p className="mt-6 text-sm text-center text-slate-500">
+      <p className="mt-6 text-sm text-center text-slate-500 animate-fade-in-up delay-300">
         Already have an account?{" "}
         <Link href="/login" className="font-bold text-purple-600 hover:text-purple-500 transition-colors">
           Sign in

@@ -186,17 +186,19 @@ export function ProfileClient({ profile }: Props) {
   return (
     <div className="space-y-6 max-w-2xl">
       {/* ── Hero card ── */}
-      <div className="rounded-2xl border border-slate-100 bg-white shadow-sm overflow-hidden">
+      <div className="rounded-2xl border border-slate-100 bg-white shadow-elevated overflow-hidden animate-fade-in-up">
         <div
-          className="h-20 w-full"
+          className="h-20 w-full relative overflow-hidden"
           style={{
             background: "linear-gradient(135deg, #a855f7 0%, #6366f1 50%, #38bdf8 100%)",
           }}
-        />
+        >
+          <div className="absolute -top-8 -right-8 w-32 h-32 rounded-full opacity-20 animate-float" style={{ background: "rgba(255,255,255,0.4)" }} />
+        </div>
         <div className="px-6 pb-5">
           <div className="flex items-end gap-4 -mt-10 mb-4">
-            <div className="relative">
-              <Avatar className="w-20 h-20 ring-4 ring-white shadow">
+            <div className="relative group">
+              <Avatar className="w-20 h-20 ring-4 ring-white shadow transition-transform duration-300 group-hover:scale-105">
                 <AvatarImage src={profile.avatar_url ?? undefined} />
                 <AvatarFallback
                   className="text-2xl font-black text-white"
@@ -205,10 +207,10 @@ export function ProfileClient({ profile }: Props) {
                   {initials(profile.full_name ?? "?")}
                 </AvatarFallback>
               </Avatar>
-              <div className="absolute bottom-0.5 right-0.5 w-4 h-4 rounded-full border-2 border-white bg-emerald-500" />
+              <div className="absolute bottom-0.5 right-0.5 w-4 h-4 rounded-full border-2 border-white bg-emerald-500 animate-glow-pulse" />
             </div>
             <div className="pb-1 flex-1 min-w-0">
-              <h1 className="text-xl font-black text-slate-900 truncate">{profile.full_name}</h1>
+              <h1 className="text-xl font-black text-slate-900 truncate font-display">{profile.full_name}</h1>
               <p className="text-sm text-slate-400 truncate">{profile.email}</p>
             </div>
           </div>
@@ -297,7 +299,7 @@ export function ProfileClient({ profile }: Props) {
 
       {/* ── Tab nav ── */}
       <div
-        className="flex gap-1 p-1 rounded-2xl w-fit"
+        className="flex gap-1 p-1 rounded-2xl w-fit animate-fade-in-up delay-75"
         style={{
           background: "rgba(99,102,241,0.06)",
           border: "1px solid rgba(99,102,241,0.12)",
@@ -307,7 +309,7 @@ export function ProfileClient({ profile }: Props) {
           <button
             key={t.key}
             onClick={() => setTab(t.key)}
-            className="flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-bold transition-all"
+            className="press-scale flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-bold transition-all duration-200"
             style={
               tab === t.key
                 ? {
@@ -328,7 +330,7 @@ export function ProfileClient({ profile }: Props) {
       {tab === "profile" && (
         <form onSubmit={handleSaveProfile} className="space-y-4">
           {/* Account info — read-only */}
-          <div className="rounded-2xl border border-slate-100 bg-white p-6 space-y-4">
+          <div className="rounded-2xl border border-slate-100 bg-white p-6 space-y-4 shadow-elevated animate-fade-in-up delay-100">
             <div className="flex items-center gap-2 mb-1">
               <h2 className="text-sm font-black text-slate-900">Account Information</h2>
               <span className="text-[10px] font-bold px-2 py-0.5 rounded-full text-slate-400 bg-slate-100">
@@ -365,7 +367,7 @@ export function ProfileClient({ profile }: Props) {
           </div>
 
           {/* Editable personal info */}
-          <div className="rounded-2xl border border-slate-100 bg-white p-6 space-y-4">
+          <div className="rounded-2xl border border-slate-100 bg-white p-6 space-y-4 shadow-elevated animate-fade-in-up delay-150">
             <h2 className="text-sm font-black text-slate-900">Personal Details</h2>
 
             {error && (
@@ -435,7 +437,7 @@ export function ProfileClient({ profile }: Props) {
             <button
               type="submit"
               disabled={saving}
-              className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90 disabled:opacity-60"
+              className="shine-hover press-scale flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold text-white transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg disabled:opacity-60"
               style={{
                 background: "linear-gradient(135deg, #a855f7, #6366f1)",
                 boxShadow: "0 4px 14px rgba(168,85,247,0.3)",
@@ -454,7 +456,7 @@ export function ProfileClient({ profile }: Props) {
       {tab === "business" && (
         <form
           onSubmit={handleSaveProfile}
-          className="rounded-2xl border border-slate-100 bg-white p-6 space-y-4"
+          className="rounded-2xl border border-slate-100 bg-white p-6 space-y-4 shadow-elevated animate-fade-in-up"
         >
           <div>
             <h2 className="text-sm font-black text-slate-900">Business Details</h2>
@@ -564,7 +566,7 @@ export function ProfileClient({ profile }: Props) {
           <button
             type="submit"
             disabled={saving}
-            className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90 disabled:opacity-60"
+            className="shine-hover press-scale flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold text-white transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg disabled:opacity-60"
             style={{
               background: "linear-gradient(135deg, #6366f1, #38bdf8)",
               boxShadow: "0 4px 14px rgba(99,102,241,0.3)",
@@ -583,7 +585,7 @@ export function ProfileClient({ profile }: Props) {
         <div className="space-y-4">
           <form
             onSubmit={handleChangePassword}
-            className="rounded-2xl border border-slate-100 bg-white p-6 space-y-4"
+            className="rounded-2xl border border-slate-100 bg-white p-6 space-y-4 shadow-elevated animate-fade-in-up"
           >
             <h2 className="text-sm font-black text-slate-900">Change Password</h2>
 
@@ -647,7 +649,7 @@ export function ProfileClient({ profile }: Props) {
             <button
               type="submit"
               disabled={pwSaving}
-              className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90 disabled:opacity-60"
+              className="shine-hover press-scale flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold text-white transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg disabled:opacity-60"
               style={{
                 background: "linear-gradient(135deg, #f43f5e, #a855f7)",
                 boxShadow: "0 4px 14px rgba(244,63,94,0.3)",

@@ -92,20 +92,28 @@ export function ReferralsClient({ referrals, members, currentUserId, currentProf
     setSubmitting(false);
     if (err) { setError(err.message); return; }
     // Notify the referral receiver via server route (bypasses RLS)
-    await fetch("/api/notifications", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        notifications: [{
-          user_id: receiverId,
-          title: "🎉 New Referral Received",
-          message: `${currentProfile.full_name} referred ${referredName} to you${category ? ` for ${category}` : ""}`,
-          type: "referral",
-          is_read: false,
-          link: "/referrals",
-        }],
-      }),
-    });
+    try {
+      const notifyRes = await fetch("/api/notifications", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          notifications: [{
+            user_id: receiverId,
+            title: "🎉 New Referral Received",
+            message: `${currentProfile.full_name} referred ${referredName} to you${category ? ` for ${category}` : ""}`,
+            type: "referral",
+            is_read: false,
+            link: "/referrals",
+          }],
+        }),
+      });
+      if (!notifyRes.ok) {
+        const body = await notifyRes.json().catch(() => ({}));
+        console.error("Referral notification failed:", notifyRes.status, body);
+      }
+    } catch (notifyErr) {
+      console.error("Referral notification request failed:", notifyErr);
+    }
     setShowNew(false); resetForm(); router.refresh();
   }
 
@@ -130,13 +138,13 @@ export function ReferralsClient({ referrals, members, currentUserId, currentProf
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 animate-fade-in-up">
         <div>
-          <h1 className="text-2xl font-black text-slate-900">Referrals</h1>
+          <h1 className="text-2xl font-black text-slate-900 font-display">Referrals</h1>
           <p className="text-sm text-slate-500 mt-0.5">{sentCount} sent · {receivedCount} received</p>
         </div>
         <button onClick={() => setShowNew(true)}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-2xl text-white text-sm font-bold transition-all hover:opacity-90 active:scale-95"
+          className="shine-hover press-scale flex items-center gap-2 px-5 py-2.5 rounded-2xl text-white text-sm font-bold transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
           style={{ background: "linear-gradient(135deg, #a855f7, #6366f1)", boxShadow: "0 8px 24px rgba(168,85,247,0.35)" }}>
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
@@ -150,7 +158,7 @@ export function ReferralsClient({ referrals, members, currentUserId, currentProf
         <div className="flex gap-1 p-1 rounded-2xl" style={{ background: "rgba(99,102,241,0.06)", border: "1px solid rgba(99,102,241,0.12)" }}>
           {tabs.map((t) => (
             <button key={t.key} onClick={() => setTab(t.key)}
-              className="px-4 py-2 rounded-xl text-xs font-bold transition-all"
+              className="press-scale px-4 py-2 rounded-xl text-xs font-bold transition-all duration-200"
               style={tab === t.key
                 ? { background: "linear-gradient(135deg, #a855f7, #6366f1)", color: "white", boxShadow: "0 4px 12px rgba(168,85,247,0.3)" }
                 : { color: "#64748b" }}>
@@ -203,17 +211,18 @@ export function ReferralsClient({ referrals, members, currentUserId, currentProf
           </button>
         </div>
       ) : (
-        <div className="space-y-3">
-          {filtered.map((ref: ReferralWithProfiles) => {
+        <div className="space-y-3 stagger-in">
+          {filtered.map((ref: ReferralWithProfiles, i: number) => {
             const isSender = ref.sender_id === currentUserId;
             const sc = STATUS_CONFIG[ref.status] ?? STATUS_CONFIG.pending;
             return (
               <div key={ref.id}
-                className="rounded-2xl border border-slate-100 bg-white p-5 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
+                className="card-hover rounded-2xl border border-slate-100 bg-white p-5 shadow-elevated"
+                style={{ ["--stagger" as string]: Math.min(i, 10) }}>
                 <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                   {/* Referred person */}
                   <div className="flex items-start gap-3 flex-1 min-w-0">
-                    <div className="w-11 h-11 rounded-2xl flex items-center justify-center text-sm font-black text-white shrink-0"
+                    <div className="w-11 h-11 rounded-2xl flex items-center justify-center text-sm font-black text-white shrink-0 transition-transform duration-300 hover:scale-105 hover:rotate-3"
                       style={{ background: "linear-gradient(135deg, #a855f7, #6366f1)" }}>
                       {ref.referred_person_name[0].toUpperCase()}
                     </div>
@@ -269,15 +278,15 @@ export function ReferralsClient({ referrals, members, currentUserId, currentProf
                     </span>
                     {!isSender && ref.status === "pending" && (
                       <div className="flex gap-1">
-                        <button className="h-7 px-3 rounded-xl text-xs font-bold text-white"
+                        <button className="press-scale h-7 px-3 rounded-xl text-xs font-bold text-white transition-transform duration-200 hover:-translate-y-0.5"
                           style={{ background: "linear-gradient(135deg, #a855f7, #6366f1)" }}
                           onClick={() => handleUpdateStatus(ref.id, "accepted")}>Accept</button>
-                        <button className="h-7 px-3 rounded-xl text-xs font-bold border border-slate-200 text-slate-600 bg-white"
+                        <button className="press-scale h-7 px-3 rounded-xl text-xs font-bold border border-slate-200 text-slate-600 bg-white transition-transform duration-200 hover:-translate-y-0.5"
                           onClick={() => handleUpdateStatus(ref.id, "rejected")}>Reject</button>
                       </div>
                     )}
                     {!isSender && ref.status === "accepted" && (
-                      <button className="h-7 px-3 rounded-xl text-xs font-bold text-white"
+                      <button className="press-scale h-7 px-3 rounded-xl text-xs font-bold text-white transition-transform duration-200 hover:-translate-y-0.5"
                         style={{ background: "linear-gradient(135deg, #22c55e, #16a34a)" }}
                         onClick={() => handleUpdateStatus(ref.id, "completed")}>Mark Done</button>
                     )}
@@ -420,7 +429,7 @@ export function ReferralsClient({ referrals, members, currentUserId, currentProf
                 Cancel
               </button>
               <button type="submit" disabled={submitting}
-                className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90 disabled:opacity-60"
+                className="shine-hover press-scale flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold text-white transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg disabled:opacity-60"
                 style={{ background: "linear-gradient(135deg, #a855f7, #6366f1)", boxShadow: "0 4px 14px rgba(168,85,247,0.35)" }}>
                 {submitting ? (
                   <>
