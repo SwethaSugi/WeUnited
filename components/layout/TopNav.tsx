@@ -50,7 +50,7 @@ export function TopNav() {
   }
 
   return (
-    <header className="sticky top-0 z-40 flex items-center justify-between h-16 px-4 md:px-6 border-b"
+    <header suppressHydrationWarning className="sticky top-0 z-40 flex items-center justify-between h-16 px-4 md:px-6 border-b"
       style={{ background: "rgba(255,255,255,0.9)", backdropFilter: "blur(16px)", borderColor: "rgba(0,0,0,0.06)" }}>
 
       {/* Left: mobile nav + logo */}
@@ -117,7 +117,7 @@ export function TopNav() {
                 <AvatarImage src={profile?.avatar_url ?? undefined} />
                 <AvatarFallback className="text-[10px] font-black text-white"
                   style={{ background: "linear-gradient(135deg, #a855f7, #6366f1)" }}>
-                  {profile ? initials(profile.full_name) : "?"}
+                  {profile ? initials(profile.full_name ?? "?") : "?"}
                 </AvatarFallback>
               </Avatar>
               <span className="hidden md:block text-sm font-bold text-slate-700 max-w-[120px] truncate">
