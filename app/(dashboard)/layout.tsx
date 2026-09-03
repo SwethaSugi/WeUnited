@@ -12,11 +12,15 @@ export default async function DashboardLayout({
   // check to keep it off the hot path; this is the one that's trusted.
   // getCurrentUserProfile() is React-cached, so the page rendering inside this
   // layout reuses this same result instead of querying Supabase again.
-  const { user, profile } = await getCurrentUserProfile();
+  const { user, profile, profileMissing } = await getCurrentUserProfile();
 
   if (!user) redirect("/login");
-  if (!profile) redirect("/onboarding");
-  if (profile.is_active === false) redirect("/login?error=deactivated");
+
+  // Only send them to onboarding if the profile row genuinely doesn't exist.
+  // If the fetch FAILED, fall through and let the page render — it surfaces a
+  // real error, which is far more useful than silently bouncing to /onboarding.
+  if (profileMissing) redirect("/onboarding");
+  if (profile?.is_active === false) redirect("/login?error=deactivated");
 
   return (
     <div className="h-screen bg-background flex overflow-hidden">

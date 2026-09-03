@@ -28,10 +28,19 @@ export default async function DashboardPage() {
   // The layout above already did the verified auth check and fetched the
   // profile. getCurrentUserProfile() is React-cached, so this reuses that
   // result rather than making the same two Supabase calls a second time.
-  const { user, profile } = await getCurrentUserProfile();
+  const { user, profile, profileMissing } = await getCurrentUserProfile();
 
   if (!user) redirect("/login");
-  if (!profile) redirect("/login");
+  if (profileMissing) redirect("/onboarding");
+
+  // If we got here with no profile, the fetch genuinely failed. Throw so the
+  // error boundary shows the reason (and it's logged server-side) instead of
+  // rendering a blank page or bouncing somewhere misleading.
+  if (!profile) {
+    throw new Error(
+      "Could not load your profile from Supabase. Check the dev server terminal for the underlying error."
+    );
+  }
 
   const chapterId = profile.chapter_id;
 

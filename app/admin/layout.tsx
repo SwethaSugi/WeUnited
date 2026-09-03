@@ -8,13 +8,15 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   // round-trip on EVERY request app-wide just to protect these few routes.
   // Here it only runs on /admin, and it's React-cached so the admin pages
   // inside reuse the same fetch.
-  const { user, profile } = await getCurrentUserProfile();
+  const { user, profile, profileMissing } = await getCurrentUserProfile();
 
   if (!user) redirect("/login");
-  if (!profile) redirect("/onboarding");
-  if (profile.is_active === false) redirect("/login?error=deactivated");
+  if (profileMissing) redirect("/onboarding");
+  if (profile?.is_active === false) redirect("/login?error=deactivated");
 
-  if (profile.role !== "chapter_admin" && profile.role !== "super_admin") {
+  // If the profile fetch failed outright, don't silently demote an admin to
+  // /dashboard — let the page render and surface the real error instead.
+  if (profile && profile.role !== "chapter_admin" && profile.role !== "super_admin") {
     redirect("/dashboard");
   }
 
