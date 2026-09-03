@@ -26,6 +26,11 @@ export default function Error({
         <p className="text-muted-foreground mt-2 max-w-sm mx-auto text-sm">
           An unexpected error occurred. Please try again.
         </p>
+        {error.message && (
+          <p className="text-xs text-destructive mt-2 font-mono max-w-md mx-auto break-words">
+            {error.message}
+          </p>
+        )}
         {error.digest && (
           <p className="text-xs text-muted-foreground mt-1 font-mono">
             Error ID: {error.digest}
