@@ -15,7 +15,7 @@ export default async function ChaptersPage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const { data: profile } = await supabase.from("profiles").select("*, chapter:chapters(*)").eq("id", user.id).single();
+  const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).single();
   if (!profile) redirect("/login");
 
   const { data: chapters } = await supabase
@@ -24,7 +24,12 @@ export default async function ChaptersPage() {
     .eq("is_active", true)
     .order("name");
 
-  const myChapter = profile.chapter;
+  // Fetch the user's chapter separately to avoid PostgREST ambiguous FK error
+  // (two FKs exist between profiles and chapters, so "*,chapter:chapters(*)" fails)
+  const { data: myChapter } = profile.chapter_id
+    ? await supabase.from("chapters").select("*, profiles(count)").eq("id", profile.chapter_id).single()
+    : { data: null };
+
   const otherChapters = (chapters ?? []).filter((ch) => ch.id !== myChapter?.id);
 
   return (

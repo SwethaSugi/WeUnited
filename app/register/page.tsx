@@ -51,15 +51,21 @@ export default function RegisterPage() {
             style={{ background: "linear-gradient(135deg, #34d399, #38bdf8)" }} />
         </div>
 
-        <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-2 font-display">Check your inbox! 📬</h2>
+        <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-2 font-display">Verify your email</h2>
         <p className="text-slate-500 dark:text-slate-400 text-sm mb-6">
-          We sent a sign-up link to <span className="font-bold text-slate-700 dark:text-slate-200">{email}</span>
+          We&apos;ve sent a verification link to{" "}
+          <span className="font-bold text-slate-700 dark:text-slate-200">{email}</span>
         </p>
 
-        <div className="p-4 rounded-2xl mb-6 text-sm text-slate-600 dark:text-slate-300"
+        <div className="p-4 rounded-2xl mb-3 text-sm text-slate-600 dark:text-slate-300 text-left space-y-2"
           style={{ background: "rgba(52,211,153,0.06)", border: "1px solid rgba(52,211,153,0.2)" }}>
-          Click the link in your email to set up your account. The link expires in <strong>1 hour</strong>.
+          <p>Please check your inbox and <strong className="text-slate-800 dark:text-slate-100">click the verification link</strong> to complete your registration.</p>
+          <p className="text-xs text-slate-400 dark:text-slate-500">The link will expire in <strong>1 hour</strong>. If you don&apos;t see the email, please check your spam or junk folder.</p>
         </div>
+
+        <p className="text-xs text-slate-400 dark:text-slate-500 mb-6">
+          Once verified, you&apos;ll be guided through setting up your profile.
+        </p>
 
         <button onClick={() => setSent(false)}
           className="text-sm font-semibold text-purple-600 hover:text-purple-500 transition-colors">
@@ -90,7 +96,7 @@ export default function RegisterPage() {
         <div className="space-y-2 animate-fade-in-up delay-75">
           <Label className="text-sm font-semibold text-slate-700 dark:text-slate-300" htmlFor="email">Email address</Label>
           <Input
-            id="email" type="email" placeholder="you@company.com"
+            id="email" type="email" placeholder="Enter your email address"
             value={email} onChange={(e) => setEmail(e.target.value)}
             required autoComplete="email" autoFocus
             className="h-12 rounded-xl border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:border-emerald-400 focus:ring-emerald-400/20 transition-all text-sm"
@@ -107,7 +113,7 @@ export default function RegisterPage() {
             </svg>
           </div>
           <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-            We&apos;ll email you a <strong className="text-slate-700 dark:text-slate-200">secure magic link</strong> — no password needed at this step.
+            Enter your email address and we&apos;ll send you a <strong className="text-slate-700 dark:text-slate-200">verification link</strong> to complete your registration.
           </p>
         </div>
 

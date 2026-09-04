@@ -18,12 +18,20 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [showPass, setShowPass] = useState(false);
   const [isDeactivated, setIsDeactivated] = useState(false);
+  const [redirectTo, setRedirectTo] = useState("/dashboard");
 
-  // Read ?error=deactivated from the URL on mount (avoids Suspense requirement)
+  // Read query params on mount (avoids Suspense requirement for useSearchParams)
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("error") === "deactivated") {
       setIsDeactivated(true);
+    }
+    // Honour the ?redirectTo param so that if the session expired while the
+    // user was on, say, /profile, they land back there after re-logging in
+    // instead of always being sent to /dashboard.
+    const dest = params.get("redirectTo");
+    if (dest && dest.startsWith("/") && !dest.startsWith("//")) {
+      setRedirectTo(dest);
     }
   }, []);
 
@@ -57,7 +65,7 @@ export default function LoginPage() {
       }
     }
 
-    router.push("/dashboard");
+    router.push(redirectTo);
     router.refresh();
   }
 
@@ -98,7 +106,7 @@ export default function LoginPage() {
         <div className="space-y-2 animate-fade-in-up delay-75">
           <Label className="text-sm font-semibold text-slate-700 dark:text-slate-300" htmlFor="email">Email address</Label>
           <Input
-            id="email" type="email" placeholder="you@example.com"
+            id="email" type="email" placeholder="Enter your email address"
             value={email} onChange={(e) => setEmail(e.target.value)}
             required autoComplete="email"
             className="h-12 rounded-xl border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:border-purple-400 focus:ring-purple-400/20 transition-all text-sm"
@@ -115,12 +123,13 @@ export default function LoginPage() {
           </div>
           <div className="relative">
             <Input
-              id="password" type={showPass ? "text" : "password"} placeholder="••••••••"
+              id="password" type={showPass ? "text" : "password"} placeholder="Enter your password"
               value={password} onChange={(e) => setPassword(e.target.value)}
               required autoComplete="current-password"
               className="h-12 rounded-xl border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:border-purple-400 focus:ring-purple-400/20 transition-all text-sm pr-10"
             />
             <button type="button" onClick={() => setShowPass(!showPass)}
+              suppressHydrationWarning
               className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors">
               {showPass ? (
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

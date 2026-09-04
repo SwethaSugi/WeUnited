@@ -20,11 +20,8 @@ export default function OnboardingLayout({ children }: { children: React.ReactNo
 
       {/* Logo */}
       <Link href="/" className="flex items-center gap-3 mb-8 group relative z-10 animate-fade-in-up">
-        <div className="relative w-10 h-10 rounded-2xl flex items-center justify-center font-black text-xs text-white transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3"
-          style={{ background: "linear-gradient(135deg, #a855f7, #6366f1)", boxShadow: "0 8px 24px rgba(168,85,247,0.4)" }}>
-          WU
-          <div className="absolute inset-0 rounded-2xl blur-md opacity-60 group-hover:opacity-90 transition-opacity duration-300"
-            style={{ background: "linear-gradient(135deg, #a855f7, #6366f1)" }} />
+        <div className="w-10 h-10 rounded-2xl overflow-hidden flex-shrink-0 shadow-lg transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
+          <img src="/logo.jpg" alt="We United" className="w-full h-full object-cover" />
         </div>
         <div>
           <p className="text-sm font-black text-white leading-tight font-display">We United</p>

@@ -20,11 +20,8 @@ export default function Home() {
       {/* ── Navbar ── */}
       <nav className="relative z-20 flex items-center justify-between px-6 py-5 max-w-7xl mx-auto w-full animate-fade-in">
         <div className="flex items-center gap-3">
-          <div className="relative h-10 w-10 rounded-2xl flex items-center justify-center transition-transform duration-300 hover:scale-110 hover:rotate-3"
-            style={{ background: "linear-gradient(135deg, #a855f7, #6366f1)" }}>
-            <span className="text-white font-black text-xs tracking-tight">WU</span>
-            <div className="absolute inset-0 rounded-2xl opacity-50 blur-md"
-              style={{ background: "linear-gradient(135deg, #a855f7, #6366f1)" }} />
+          <div className="relative h-10 w-10 rounded-2xl overflow-hidden flex-shrink-0 shadow-md transition-transform duration-300 hover:scale-110 hover:rotate-3">
+            <img src="/logo.jpg" alt="We United" className="w-full h-full object-cover" />
           </div>
           <span className="text-xl font-black text-slate-900 dark:text-white tracking-tight font-display">We United</span>
         </div>

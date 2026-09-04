@@ -140,19 +140,19 @@ export function CreateUserClient({ chapters }: Props) {
           {/* ── Section: Account ── */}
           <SectionCard title="Account Details" icon="👤">
             <FieldGroup label="Full Name">
-              <input className={inputCls} placeholder="e.g. Priya Sharma" value={fullName}
+              <input className={inputCls} placeholder="Enter full name" value={fullName}
                 onChange={(e) => setFullName(e.target.value)} required />
             </FieldGroup>
 
             <FieldGroup label="Email Address">
-              <input className={inputCls} type="email" placeholder="priya@example.com" value={email}
+              <input className={inputCls} type="email" placeholder="Enter email address" value={email}
                 onChange={(e) => setEmail(e.target.value)} required />
             </FieldGroup>
 
             <FieldGroup label="Password">
               <div className="relative">
                 <input className={inputCls + " pr-10"} type={showPass ? "text" : "password"}
-                  placeholder="Min. 8 characters" value={password}
+                  placeholder="Enter password (min. 8 characters)" value={password}
                   onChange={(e) => setPassword(e.target.value)} required minLength={8} />
                 <button type="button" onClick={() => setShowPass(!showPass)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
@@ -174,7 +174,7 @@ export function CreateUserClient({ chapters }: Props) {
                 <div className="flex items-center px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm font-semibold text-slate-600 dark:text-slate-400 select-none">
                   🇮🇳 +91
                 </div>
-                <input className={inputCls + " flex-1"} type="tel" placeholder="9876543210"
+                <input className={inputCls + " flex-1"} type="tel" placeholder="Enter phone number"
                   value={phone} onChange={(e) => setPhone(e.target.value)} />
               </div>
               <p className="text-xs text-slate-400 mt-1.5">
@@ -186,7 +186,7 @@ export function CreateUserClient({ chapters }: Props) {
           {/* ── Section: Business ── */}
           <SectionCard title="Business Info" icon="🏢">
             <FieldGroup label="Business Name">
-              <input className={inputCls} placeholder="Acme Consulting Pvt. Ltd." value={businessName}
+              <input className={inputCls} placeholder="Enter business name" value={businessName}
                 onChange={(e) => setBusinessName(e.target.value)} />
             </FieldGroup>
 
@@ -204,7 +204,7 @@ export function CreateUserClient({ chapters }: Props) {
             </FieldGroup>
 
             <FieldGroup label="Tagline (optional)">
-              <input className={inputCls} placeholder="Your trusted partner in growth" value={businessTagline}
+              <input className={inputCls} placeholder="Enter a short tagline (optional)" value={businessTagline}
                 onChange={(e) => setBusinessTagline(e.target.value)} />
             </FieldGroup>
           </SectionCard>

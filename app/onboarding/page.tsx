@@ -160,7 +160,7 @@ export default function OnboardingPage() {
             <div className="space-y-2">
               <Label htmlFor="password">New Password</Label>
               <Input
-                id="password" type="password" placeholder="Min. 8 characters"
+                id="password" type="password" placeholder="Enter your password (min. 8 characters)"
                 value={form.password} onChange={(e) => set("password", e.target.value)}
                 autoComplete="new-password"
               />
@@ -168,7 +168,7 @@ export default function OnboardingPage() {
             <div className="space-y-2">
               <Label htmlFor="confirm">Confirm Password</Label>
               <Input
-                id="confirm" type="password" placeholder="Re-enter password"
+                id="confirm" type="password" placeholder="Re-enter your password"
                 value={form.confirmPassword} onChange={(e) => set("confirmPassword", e.target.value)}
                 autoComplete="new-password"
               />
@@ -182,7 +182,7 @@ export default function OnboardingPage() {
             <div className="space-y-2">
               <Label htmlFor="fullName">Full Name <span className="text-destructive">*</span></Label>
               <Input
-                id="fullName" placeholder="Priya Sharma"
+                id="fullName" placeholder="Enter your full name"
                 value={form.fullName} onChange={(e) => set("fullName", e.target.value)}
               />
             </div>
@@ -193,7 +193,7 @@ export default function OnboardingPage() {
                 Phone Number <span className="text-destructive">*</span>
               </Label>
               <Input
-                id="phone" placeholder="9876543210" type="tel"
+                id="phone" placeholder="Enter your phone number" type="tel"
                 value={form.phone}
                 onChange={(e) => set("phone", e.target.value)}
               />
@@ -223,7 +223,7 @@ export default function OnboardingPage() {
             <div className="space-y-2">
               <Label htmlFor="businessName">Business Name <span className="text-destructive">*</span></Label>
               <Input
-                id="businessName" placeholder="Sharma & Co."
+                id="businessName" placeholder="Enter your business name"
                 value={form.businessName} onChange={(e) => set("businessName", e.target.value)}
               />
             </div>
@@ -243,7 +243,7 @@ export default function OnboardingPage() {
             <div className="space-y-2">
               <Label htmlFor="tagline">Tagline <span className="text-muted-foreground text-xs">(optional)</span></Label>
               <Input
-                id="tagline" placeholder="Empowering businesses to scale smarter"
+                id="tagline" placeholder="Enter a short tagline for your business"
                 value={form.businessTagline} onChange={(e) => set("businessTagline", e.target.value)}
               />
             </div>

@@ -53,8 +53,9 @@ export function MobileNav() {
 
         {/* Logo header */}
         <div className="flex items-center gap-3 px-5 py-5 border-b" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center font-black text-xs text-white"
-            style={{ background: "linear-gradient(135deg, #a855f7, #6366f1)" }}>WU</div>
+          <div className="w-9 h-9 rounded-xl overflow-hidden flex-shrink-0">
+            <img src="/logo.jpg" alt="We United" className="w-full h-full object-cover" />
+          </div>
           <div>
             <p className="text-sm font-black text-white">We United</p>
             <p className="text-[10px] text-white/30">Business Network</p>

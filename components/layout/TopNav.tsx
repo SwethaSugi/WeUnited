@@ -59,14 +59,24 @@ export function TopNav() {
       <div className="flex items-center gap-3">
         <MobileNav />
         <Link href="/dashboard" className="lg:hidden flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg flex items-center justify-center font-black text-[10px] text-white shadow-md"
-            style={{ background: "linear-gradient(135deg, #a855f7, #6366f1)" }}>WU</div>
+          <div className="w-7 h-7 rounded-lg overflow-hidden flex-shrink-0 shadow-md">
+            <img src="/logo.jpg" alt="We United" className="w-full h-full object-cover" />
+          </div>
           <span className="font-black text-sm text-slate-900">We United</span>
         </Link>
       </div>
 
       {/* Right */}
       <div className="flex items-center gap-1.5">
+        {/* About */}
+        <Link href="/about"
+          className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-semibold text-slate-500 hover:text-slate-700 hover:bg-slate-100 transition-all duration-200">
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          About
+        </Link>
+
         {/* Notifications */}
         <DropdownMenu onOpenChange={(open) => { if (open) fetchNotifications(); }}>
           <DropdownMenuTrigger asChild>
